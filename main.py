@@ -18,6 +18,6 @@ if __name__ == "__main__":
     utils.ManimRunner(
         class_to_render='Intro',
         file_path=r'main.py',  # it's relative to cwd
-        args=["-p", "-ql"],
-        project_name="Godofredo"
+        project_name="Godofredo",
+        manim_args=["-p", "-ql"],
     )
