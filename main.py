@@ -4,21 +4,32 @@ from manim import *
 
 sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}')
 
+import video_utils
 import compileutils
-import utils
 
 UIS_GREEN = "#67b93e"
 
+
 class Intro(Scene):
+    def __init__(self):
+        self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
+                                   stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
+
+        self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
+        self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
+        self.uis_logo[0].set_fill(color=UIS_GREEN, opacity=.8)
+        self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
+
     def construct(self):
-        
+
         self.wait(1)
         # self.add_sound('introsound')
 
-        uis_logo = SVGMobject('.\\assets\\svg_images\\UIS.svg', fill_opacity=0.7, stroke_width=2, fill_color=UIS_GREEN)
-        
-        uis_logo[1].set_fill(color = WHITE, opacity = 0.6)
-        
+        uis_logo = SVGMobject('.\\assets\\svg_images\\UIS.svg',
+                              fill_opacity=0.7, stroke_width=2, fill_color=UIS_GREEN)
+
+        uis_logo[1].set_fill(color=WHITE, opacity=0.6)
+
         letter_bg = uis_logo[2].get_fill_rgbas().tolist()[0]
 
         letter_bg[0:3] = [color*.8*255 for color in letter_bg[0:3]]
@@ -26,7 +37,7 @@ class Intro(Scene):
         letter_bg_hex = ''.join(letter_bg[0:3])
         letter_bg_hex = f'#{letter_bg_hex}'
         letter_bg_opacity = letter_bg[3]
-        
+
         for logo in uis_logo[2:5]:
             logo.set_fill(color=letter_bg_hex, opacity=letter_bg_opacity)
 
@@ -101,10 +112,10 @@ class Intro(Scene):
         for author in authors:
             
             author_anims.append(Write(author))
-    
-        #animations
-        self.play(Write(by)) 
-        self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time = 3)
+
+        # animations
+        self.play(Write(by))
+        self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
 
         lc_title_1 = Tex(
             'La trigonometría es más sobre circulos',
@@ -134,7 +145,8 @@ class Intro(Scene):
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
 
-        anim_group = AnimationGroup(Write(lc_title), Write(subtitle_auth), lag_ratio=0.5)
+        anim_group = AnimationGroup(
+            Write(lc_title), Write(subtitle_auth), lag_ratio=0.5)
 
         self.play(anim_group, run_time=2.5)
 
@@ -142,11 +154,28 @@ class Intro(Scene):
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
-    # def show_uis_logo(self):
-    #     uis = utils.get_uis_logo()
-    #     self.play(DrawBorderThenFill(uis), run_time=2)
-    #     self.wait()
-    #     self.play(VFadeOut(uis), run_time=2)
+    def show_uis_logo(self):
+        self.play(DrawBorderThenFill(self.uis_logo), run_time=2)
+        self.wait()
+        self.play(VFadeOut(self.uis_logo), run_time=2)
+
+
+class Test(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
+                                   stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
+
+        self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
+        self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
+        self.uis_logo[0].set_fill(color=UIS_GREEN, opacity=.8)
+        self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
+
+    def construct(self):
+        self.play(DrawBorderThenFill(self.uis_logo), run_time=2)
+        self.wait()
+        self.play(VFadeOut(self.uis_logo), run_time=2)
+
 
 def main():
 
@@ -169,13 +198,11 @@ def main():
     compileutils.compile_videos(scenes, args, concatenate=False)
     # compileutils.concatenate_videos(name_list=scenes)
 
-if __name__ == "__main__":
-    main() 
 
-# if __name__ == "__main__":
-#     # utils.ManimRunner(
-#     #     class_to_render='Intro',
-#     #     file_path=r'main.py',  # it's relative to cwd
-#     #     args=["-p", "-ql"],
-#     #     project_name="Godofredo"
-#     # )
+if __name__ == "__main__":
+    video_utils.ManimRunner(
+        class_to_render='Test',
+        file_path=r'main.py',  # it's relative to cwd
+        project_name="Godofredo",
+        manim_args=["-p", "-ql"],
+    )
