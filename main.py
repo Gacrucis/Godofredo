@@ -11,7 +11,8 @@ UIS_GREEN = "#67b93e"
 
 
 class Intro(Scene):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
                                    stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
 
@@ -25,7 +26,7 @@ class Intro(Scene):
         self.wait(1)
         # self.add_sound('introsound')
 
-        uis_logo = SVGMobject('.\\assets\\svg_images\\UIS.svg',
+        uis_logo = SVGMobject('.\\assets\\svg\\UIS.svg',
                               fill_opacity=0.7, stroke_width=2, fill_color=UIS_GREEN)
 
         uis_logo[1].set_fill(color=WHITE, opacity=0.6)
@@ -156,7 +157,7 @@ class Test(Scene):
         self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
 
     def construct(self):
-        self.play(DrawBorderThenFill(self.uis_logo), run_time=2)
+        self.play(Write(self.uis_logo), run_time=2)
         self.wait()
         self.play(VFadeOut(self.uis_logo), run_time=2)
 
@@ -184,9 +185,12 @@ def main():
 
 
 if __name__ == "__main__":
-    video_utils.ManimRunner(
-        class_to_render='Test',
+    runner = video_utils.ManimRunner(
+        scenes={
+            'Test': ['-p', '-qp'],
+        },
         file_path=r'main.py',  # it's relative to cwd
         project_name="Godofredo",
-        manim_args=["-p", "-ql"],
     )
+
+    runner.run_scenes()
