@@ -38,12 +38,12 @@ class Intro(Scene):
         self.wait(1)
         # self.add_sound('introsound')
         
-        title = Tex('Trigonometría')
+        title = Tex('HDLE')
         title.scale(2)
         title.align_on_border(UP, buff=2)
         
-        subtitle = Tex('La historia de una asignatura incomprendida')
-        subtitle.scale(1.2)
+        subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
+        subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
         subtitle.set_color(RED)
 
@@ -56,35 +56,50 @@ class Intro(Scene):
 
         self.wait(0.8)
 
+        author_scale = 0.7
+
         by = Tex("By:")
-        g = MathTex(r"\gamma \text{ Edward Parada}")
-        g.next_to(subtitle, DOWN, buff=1)
-        g.align_on_border(LEFT, buff=2)
 
-        # e = MathTex(r"\varepsilon \text{ José Silva - 2183075}")
-        # e.next_to(g, DOWN, buff=0.2)
-        # e.align_to(g, LEFT)
-        # e.shift(RIGHT*0.18)
+        authors = [
+            MathTex(r"\gamma \text{ Edward Parada - 2182070}"),
+            MathTex(r"\pi \text{ Gian Estevez - 2102020}"),
+            MathTex(r"\varepsilon \text{ José Silva - 2183075}"),
+            MathTex(r"\mu \text{ Yuri Garcia - 2182697}")
+        ]
 
-        # f = MathTex(r"\mu \text{ Yuri Garcia - 2182697}")
-        # f.next_to(e, DOWN, buff=0.2)
-        # f.align_to(g, LEFT)
-        # f.shift(RIGHT*0.08)
-
-        g.set_color_by_gradient("#D9E4E1","#C9D1CF", "#B3BCB9")
-        # e.set_color_by_gradient("#736357","#736357","#737157")
-        # f.set_color_by_gradient("#ac6c2d ","#ac6c2d","#c07932")
+        author_colors = [
+            '#D9E4E1',
+            '#736357',
+            '#ac6c2d',
+            '#D9E4E1'
+        ]
 
 
-        by.next_to(g, LEFT, buff = .1)
-        by.scale(0.7)
+        base_author = authors[0]
+        base_author.scale(author_scale)
+        base_author.next_to(subtitle, DOWN, buff=1)
+        base_author.align_on_border(LEFT, buff=2)
+        base_author.set_color(author_colors[0])
+        
+        for prev, author in enumerate(authors[1:]):
+            author.scale(author_scale)
+            prev_author = authors[prev]
+            color = author_colors[prev+1]
 
-        # authors = [g, e, f]
-        authors = [g]
+            author.next_to(prev_author, DOWN, buff=0.2)
+            author.align_to(base_author, LEFT)
+            author.set_color(color)
+
+        by.scale(author_scale)
+        by.next_to(base_author, LEFT, buff = .15)
+        
+
+        # authors = [g, e, t]
+        # authors = [g]
         author_anims = []
 
         for author in authors:
-            author.scale(0.7)
+            
             author_anims.append(Write(author))
     
         #animations
@@ -101,8 +116,8 @@ class Intro(Scene):
             alignment='\\justifying'
         )
 
-        lc_title_1.match_height(g)
-        lc_title_2.match_height(g)
+        lc_title_1.match_height(base_author)
+        lc_title_2.match_height(base_author)
 
         lc_title_1.next_to(subtitle, DOWN, buff=1)
         lc_title_1.shift(RIGHT*3)
@@ -115,7 +130,7 @@ class Intro(Scene):
 
         subtitle_auth = Tex('- Anónimo')
         subtitle_auth.set_color(RED)
-        subtitle_auth.set_height(0.235)
+        subtitle_auth.height = 0.235
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
 
@@ -143,10 +158,10 @@ def main():
     args = '-'
     args += 'p'
     args += 'q'
-    # args += 'h'
+    args += 'h'
     # args += 'm'
     # args += 'l'
-    args += 'k'
+    # args += 'k'
     # args += 's'
 
     # args += ' -c #00ff00'
