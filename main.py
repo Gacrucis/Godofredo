@@ -1,13 +1,14 @@
+import compileutils
+import video_utils
 import os
 import sys
 from manim import *
 
 sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}')
 
-import video_utils
-import compileutils
 
 UIS_GREEN = "#67b93e"
+
 
 class Intro(MovingCameraScene):
 
@@ -39,12 +40,13 @@ class Intro(MovingCameraScene):
 
         self.wait(1)
         # self.add_sound('introsound')
-        
+
         title = Tex('HDLE')
         title.scale(2)
         title.align_on_border(UP, buff=2)
-        
-        subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
+
+        subtitle = Tex(
+            'O como colocar datos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
         subtitle.set_color('#7698B3')
@@ -76,13 +78,12 @@ class Intro(MovingCameraScene):
             '#83B5D1'
         ]
 
-
         base_author = authors[0]
         base_author.scale(author_scale)
         base_author.next_to(subtitle, DOWN, buff=1)
         base_author.align_on_border(LEFT, buff=2)
         base_author.set_color(author_colors[0])
-        
+
         for prev, author in enumerate(authors[1:]):
             author.scale(author_scale)
             prev_author = authors[prev]
@@ -93,15 +94,14 @@ class Intro(MovingCameraScene):
             author.set_color(color)
 
         by.scale(author_scale)
-        by.next_to(base_author, LEFT, buff = .15)
-        
+        by.next_to(base_author, LEFT, buff=.15)
 
         # authors = [g, e, t]
         # authors = [g]
         author_anims = []
 
         for author in authors:
-            
+
             author_anims.append(Write(author))
 
         # animations
@@ -147,6 +147,7 @@ class Intro(MovingCameraScene):
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
+
 class Test(Scene):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,7 +160,7 @@ class Test(Scene):
         self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
 
     def construct(self):
-        self.play(DrawBorderThenFill(self.uis_logo), run_time=2)
+        self.play(Write(self.uis_logo), run_time=2)
         self.wait()
         self.play(VFadeOut(self.uis_logo), run_time=2)
 
@@ -193,7 +194,9 @@ if __name__ == "__main__":
         project_name="Godofredo",
         manim_args=[
             "-p",
-            "-qh", 
+            "-qh",
             # '--disable_caching'
         ],
     )
+
+    runner.run_scenes()
