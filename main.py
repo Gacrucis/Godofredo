@@ -9,37 +9,28 @@ import compileutils
 
 UIS_GREEN = "#67b93e"
 
-
-class Intro(Scene):
-    def __init__(self):
-        self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
-                                   stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
-
-        self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
-        self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
-        self.uis_logo[0].set_fill(color=UIS_GREEN, opacity=.8)
-        self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
+class Intro(MovingCameraScene):
 
     def construct(self):
 
-        self.wait(1)
+        # self.wait(1)
         # self.add_sound('introsound')
 
-        uis_logo = SVGMobject('.\\assets\\svg_images\\UIS.svg',
+        uis_logo = SVGMobject('.\\assets\\svg\\UIS.svg',
                               fill_opacity=0.7, stroke_width=2, fill_color=UIS_GREEN)
 
-        uis_logo[1].set_fill(color=WHITE, opacity=0.6)
+        # uis_logo[1].set_fill(color=WHITE, opacity=0.6)
 
-        letter_bg = uis_logo[2].get_fill_rgbas().tolist()[0]
+        # letter_bg = uis_logo[2].get_fill_rgbas().tolist()[0]
 
-        letter_bg[0:3] = [color*.8*255 for color in letter_bg[0:3]]
-        letter_bg[0:3] = [f'{int(color):x}' for color in letter_bg[0:3]]
-        letter_bg_hex = ''.join(letter_bg[0:3])
-        letter_bg_hex = f'#{letter_bg_hex}'
-        letter_bg_opacity = letter_bg[3]
+        # letter_bg[0:3] = [color*.8*255 for color in letter_bg[0:3]]
+        # letter_bg[0:3] = [f'{int(color):x}' for color in letter_bg[0:3]]
+        # letter_bg_hex = ''.join(letter_bg[0:3])
+        # letter_bg_hex = f'#{letter_bg_hex}'
+        # letter_bg_opacity = letter_bg[3]
 
-        for logo in uis_logo[2:5]:
-            logo.set_fill(color=letter_bg_hex, opacity=letter_bg_opacity)
+        # for logo in uis_logo[2:5]:
+        #     logo.set_fill(color=letter_bg_hex, opacity=letter_bg_opacity)
 
         self.play(DrawBorderThenFill(uis_logo), run_time=1.5)
         self.wait(1.5)
@@ -201,8 +192,8 @@ def main():
 
 if __name__ == "__main__":
     video_utils.ManimRunner(
-        class_to_render='Test',
+        class_to_render='Intro',
         file_path=r'main.py',  # it's relative to cwd
         project_name="Godofredo",
-        manim_args=["-p", "-ql"],
+        manim_args=["-p", "-qh"],
     )
