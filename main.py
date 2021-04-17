@@ -32,7 +32,7 @@ class Intro(MovingCameraScene):
         # for logo in uis_logo[2:5]:
         #     logo.set_fill(color=letter_bg_hex, opacity=letter_bg_opacity)
 
-        self.play(DrawBorderThenFill(uis_logo), run_time=1.5)
+        self.play(Write(uis_logo), run_time=1.5)
         self.wait(1.5)
 
         self.play(FadeOut(uis_logo), run_time=1.5)
@@ -47,7 +47,7 @@ class Intro(MovingCameraScene):
         subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
-        subtitle.set_color(RED)
+        subtitle.set_color('#7698B3')
 
         self.play(Write(title))
         self.play(Write(subtitle))
@@ -70,10 +70,10 @@ class Intro(MovingCameraScene):
         ]
 
         author_colors = [
-            '#D9E4E1',
-            '#736357',
-            '#ac6c2d',
-            '#D9E4E1'
+            '#7F557D',
+            '#726E97',
+            '#7698B3',
+            '#83B5D1'
         ]
 
 
@@ -109,12 +109,12 @@ class Intro(MovingCameraScene):
         self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
 
         lc_title_1 = Tex(
-            'La trigonometría es más sobre circulos',
+            'La vida es dura, ',
             alignment='\\justifying'
         )
 
         lc_title_2 = Tex(
-            'que sobre triangulos.',
+            'pero mas dura es la verdura.',
             alignment='\\justifying'
         )
 
@@ -128,10 +128,10 @@ class Intro(MovingCameraScene):
         lc_title_2.align_to(lc_title_1, LEFT)
 
         lc_title = VGroup(lc_title_1, lc_title_2)
-        lc_title.set_color(RED_A)
+        lc_title.set_color("#83B5D1")
 
-        subtitle_auth = Tex('- Anónimo')
-        subtitle_auth.set_color(RED)
+        subtitle_auth = Tex('- Abraham Lincoln')
+        subtitle_auth.set_color('#7698B3')
         subtitle_auth.height = 0.235
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
@@ -144,12 +144,6 @@ class Intro(MovingCameraScene):
         self.wait(3)
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
-
-    def show_uis_logo(self):
-        self.play(DrawBorderThenFill(self.uis_logo), run_time=2)
-        self.wait()
-        self.play(VFadeOut(self.uis_logo), run_time=2)
-
 
 class Test(Scene):
     def __init__(self, *args, **kwargs):
@@ -195,5 +189,9 @@ if __name__ == "__main__":
         class_to_render='Intro',
         file_path=r'main.py',  # it's relative to cwd
         project_name="Godofredo",
-        manim_args=["-p", "-qh"],
+        manim_args=[
+            "-p",
+            "-qh", 
+            # '--disable_caching'
+        ],
     )
