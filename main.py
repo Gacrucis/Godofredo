@@ -128,10 +128,10 @@ class Intro(MovingCameraScene):
         lc_title_2.align_to(lc_title_1, LEFT)
 
         lc_title = VGroup(lc_title_1, lc_title_2)
-        lc_title.set_color("#83B5D1")
+        lc_title.set_color("#7698B3")
 
         subtitle_auth = Tex('- Abraham Lincoln')
-        subtitle_auth.set_color('#7698B3')
+        subtitle_auth.set_color('#726E97')
         subtitle_auth.height = 0.235
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
@@ -142,6 +142,8 @@ class Intro(MovingCameraScene):
         self.play(anim_group, run_time=2.5)
 
         self.wait(3)
+
+        lc_title.anim
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
@@ -175,7 +177,7 @@ def main():
     args += 'h'
     # args += 'm'
     # args += 'l'
-    # args += 'k'
+    args += 'k'
     # args += 's'
 
     # args += ' -c #00ff00'
