@@ -11,7 +11,7 @@ UIS_COLOR = "#67b93e"
 
 
 class ManimRunner(object):
-    def __init__(self, class_to_render, file_path, project_name, manim_args=[]):
+    def __init__(self, class_to_render, file_path, project_name, manim_args=[], output_dir=None):
         """
             args: <list type> [manim raw args such as '-pql' or '-a']
             readable kwargs:
@@ -22,26 +22,29 @@ class ManimRunner(object):
             "raw": ' '.join(manim_args)
         }
         self.file_path = ManimRunner.read_path(file_path)
-        self.output_dir = Path(Path.home() / "Videos" / "Manim")
+
+        if not output_dir:
+            output_dir = Path(Path.home() / "Videos" / "Manim")
+
         self.class_name = class_to_render
 
         if not os.path.isabs(self.file_path):
             self.file_path = Path(Path.cwd() / self.file_path)
 
         if project_name:
-            self.output_dir /= project_name
-            ManimRunner.create_folder(self.output_dir)
+            output_dir = Path(output_dir / project_name)
+            ManimRunner.create_folder(output_dir)
 
-        self.execute_scene(manim_args)
+        self.execute_scene(output_dir, manim_args)
 
-    def execute_scene(self, args):
+    def execute_scene(self, output_dir, args):
         command = ' '.join([
             "manim",
             f'"{self.file_path}"',
             self.class_name,
             self.args["raw"],
             "--media_dir",
-            f'"{self.output_dir}"',
+            f'"{output_dir}"',
             *args
         ])
 
