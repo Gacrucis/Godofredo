@@ -143,7 +143,7 @@ class Intro(MovingCameraScene):
 
         self.wait(3)
 
-        lc_title.anim
+        # lc_title.anim
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
@@ -188,15 +188,14 @@ def main():
 
 
 if __name__ == "__main__":
-    video_utils.ManimRunner(
-        class_to_render='Intro',
+    runner = video_utils.ManimRunner(
+        scenes={
+            # 'Test': ['-p', '-qh'],
+            'Intro': ['-p', '-ql']
+        },
         file_path=r'main.py',  # it's relative to cwd
-        project_name="Godofredo",
-        manim_args=[
-            "-p",
-            "-qh",
-            # '--disable_caching'
-        ],
+        project_name='Godofredo'
     )
 
     runner.run_scenes()
+    runner.concatenate_videos()
