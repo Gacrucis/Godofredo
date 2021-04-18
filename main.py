@@ -1,6 +1,9 @@
+from enum import Enum
 import os
+import sys
 import itertools as it
-from manim import *
+from colour import Color
+from manim import * # type: ignore
 
 sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}')
 
@@ -9,16 +12,14 @@ import video_utils
 import presets
 
 UIS_GREEN = "#67b93e"
-PALETTE = {
-    'PURPLE': '#673c4f',
-    'LIGHT_PURPLE': '#7f557d',
-    'VIOLET': '#726e97',
-    'DARK_SKY_BLUE': '#7698b3',
-    'SKY_BLUE': '#83b5d1'
-}
-
+PURPLE = '#673c4f'
+LIGHT_PURPLE = '#7f557d'
+VIOLET = '#726e97'
+DARK_SKY_BLUE = '#7698b3'
+SKY_BLUE = '#83b5d1'
 
 class Intro(MovingCameraScene):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
@@ -31,7 +32,7 @@ class Intro(MovingCameraScene):
 
     def construct(self):
 
-        self.play(Write(self.uis_logo), run_time=1.5)
+        self.play(Write(self.uis_logo), run_time=3)
         self.wait(1.5)
 
         self.play(FadeOut(self.uis_logo), run_time=1.5)
@@ -40,11 +41,10 @@ class Intro(MovingCameraScene):
         title.scale(2)
         title.align_on_border(UP, buff=2)
 
-        subtitle = Tex(
-            'O como colocar datos en términos de numeros (y viceversa)')
+        subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
-        subtitle.set_color('#7698B3')
+        subtitle.set_color(DARK_SKY_BLUE)
 
         self.play(Write(title))
         self.play(Write(subtitle))
@@ -52,22 +52,28 @@ class Intro(MovingCameraScene):
         self.wait(0.8)
 
         author_scale = 0.7
-        author_colors = it.cycle([PALETTE['LIGHT_PURPLE'],
-                                  PALETTE['VIOLET'],
-                                  PALETTE['DARK_SKY_BLUE'],
-                                  PALETTE['SKY_BLUE']])
+        author_colors = it.cycle(
+            [
+                PURPLE,
+                LIGHT_PURPLE,
+                VIOLET,
+                DARK_SKY_BLUE,
+                SKY_BLUE
+            ]
+        )
 
         by = Tex("By:")
 
         authors = VGroup(
             MathTex(r"\gamma \text{ Edward Parada - 2182070}"),
-            MathTex(r"\pi \text{ Gian Estevez - 2102020}"),
+            MathTex(r"\Omega \text{ Gian Estevez - 2102020}"),
             MathTex(r"\varepsilon \text{ José Silva - 2183075}"),
             MathTex(r"\mu \text{ Yuri Garcia - 2182697}")
         ).scale(author_scale)
 
         base_author = authors[0]
-        base_author.set_color(next(author_colors))
+        current_color = next(author_colors)
+        base_author.set_color(current_color) # type: ignore
 
         base_author.next_to(subtitle, DOWN, buff=1)
         base_author.align_on_border(LEFT, buff=2)
@@ -77,14 +83,14 @@ class Intro(MovingCameraScene):
         author_anims = []
 
         for author in authors:
-            color = next(author_colors)
+            current_color = next(author_colors)
 
             if author is not base_author:
                 author.align_to(base_author, LEFT)
 
-            author.set_color(color)
+            author.set_color(current_color) # type: ignore
+            author_anims.append(Write(author)) # type: ignore
 
-            author_anims.append(Write(author))
 
         by.scale(author_scale)
         by.next_to(base_author, LEFT, buff=.15)
@@ -113,10 +119,10 @@ class Intro(MovingCameraScene):
         lc_title_2.align_to(lc_title_1, LEFT)
 
         lc_title = VGroup(lc_title_1, lc_title_2)
-        lc_title.set_color(PALETTE["SKY_BLUE"])
+        lc_title.set_color(DARK_SKY_BLUE)
 
         subtitle_auth = Tex('- Abraham Lincoln')
-        subtitle_auth.set_color(PALETTE["VIOLET"])
+        subtitle_auth.set_color(VIOLET)
         subtitle_auth.height = 0.235
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
@@ -130,18 +136,56 @@ class Intro(MovingCameraScene):
 
         # lc_title.anim
 
-        # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
+        self.play(
+            FadeOut(presets.get_vmobjects_from_scene(self)), 
+            FadeOut(VGroup(authors, lc_title, subtitle_auth))
+        )
+
+        self.wait()
+
+class FirstChapterIntro(MovingCameraScene):
+
+    def construct(self):
+        
+        chapter = presets.create_chapter(
+            title='Inicios de la estadística',
+            subtitle='Érase una vez un hombre con muchas manzanas . . .',
+            scale_factor=0.9,
+            color=PURPLE
+        )
+
+        animations = chapter[0]
+
+        for animation in animations:
+            self.play(animation)
+
+        self.wait()
 
 class FirstChapter(MovingCameraScene):
 
     def construct(self):
         
-        chapter = presets.create_chapter(
-            title = 'El ataque de los patos',
-            subtitle = '4K FHD'
+        timeline = presets.create_timeline(
+            dot_colors=[
+                PURPLE,
+                LIGHT_PURPLE,
+                VIOLET,
+                DARK_SKY_BLUE,
+                SKY_BLUE
+            ]
         )
 
-        animations = chapter[0]
+        animations = [DrawBorderThenFill(timeline)]
+
+        timeline_dots = timeline[1]
+        timeline_arrow = Arrow(
+            start=timeline_dots[0].get_center()+UP,
+            end=timeline_dots[0].get_center(),
+            color=WHITE
+        )
+
+        animations.append(Wait())
+        animations.append(DrawBorderThenFill(timeline_arrow))
 
         for animation in animations:
             self.play(animation)
@@ -168,8 +212,18 @@ class Test(Scene):
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            # 'Test': ['-p', '-qh'],
-            'FirstChapter': ['-p', '-qh']
+            'Intro': [
+                '-qh',
+                # '-p'
+            ],            
+            'FirstChapterIntro': [
+                '-qh',
+                # '-p'
+            ],        
+            'FirstChapter': [
+                '-qh',
+                # '-p'
+            ],        
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'

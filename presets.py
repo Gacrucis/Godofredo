@@ -100,7 +100,7 @@ def create_chapter(title, subtitle, color=MAROON_C, subtitle_buff=-0.5, scale_fa
     lc_title.scale(2 * scale_factor)
 
     anims.append(Write(lc_title))
-    # anims.append(Animation(Point(), run_time=1))
+    anims.append(Wait())
     # anims.append(ApplyMethod(lc_title.move_to, UP))
     anims.append(lc_title.animate.move_to(UP))
 
@@ -110,31 +110,31 @@ def create_chapter(title, subtitle, color=MAROON_C, subtitle_buff=-0.5, scale_fa
     subtitle.next_to(lc_title, DOWN, buff=subtitle_buff)
 
     anims.append(Write(subtitle))
-    # anims.append(Animation(Point(), run_time=1))
+    anims.append(Wait())
 
     title = VGroup(lc_title, subtitle)
 
     anims.append(FadeOutAndShift(title, direction=DOWN))
-    # anims.append(Animation(Point(), run_time=1))
+    anims.append(Wait())
 
     return [anims, VGroup(title, subtitle)]
 
 
     
-    title = Tex(text, color=color)
-    title.scale(scale_factor)
+    # title = Tex(text, color=color)
+    # title.scale(scale_factor)
 
-    bar = Line()
-    bar.set_opacity(0)
+    # bar = Line()
+    # bar.set_opacity(0)
     
-    bar_radius = Camera().frame_width/2 - bar_buff
+    # bar_radius = Camera().frame_width/2 - bar_buff
 
-    if bar:
+    # if bar:
 
-        bar = Line(start=LEFT*bar_radius, end=RIGHT*bar_radius, color=bar_color)
-        bar.next_to(title, DOWN, buff=0.2)
+    #     bar = Line(start=LEFT*bar_radius, end=RIGHT*bar_radius, color=bar_color)
+    #     bar.next_to(title, DOWN, buff=0.2)
     
-    return VGroup(title, bar)
+    # return VGroup(title, bar)
 
 
 def create_paragraph(text, color=WHITE, scale_factor=0.5):
