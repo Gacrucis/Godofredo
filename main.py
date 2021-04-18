@@ -124,6 +124,8 @@ class Intro(MovingCameraScene):
 
         self.wait(3)
 
+        # lc_title.anim
+
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
 
