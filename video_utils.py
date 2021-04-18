@@ -1,15 +1,8 @@
 import traceback
 
-import shutil
-
 import os
 
 from pathlib import Path
-
-from manim import SVGMobject, WHITE
-
-
-UIS_COLOR = "#67b93e"
 
 
 class ManimRunner(object):
@@ -73,21 +66,24 @@ class ManimRunner(object):
         os.system(command)
 
     def concatenate_videos(self):
+        if len(self.scenes) <= 1:
+            print("[INFO] Requires 2 or more videos to concatenate.")
+            return
         temp_name = 'temp.txt'
         output_name = 'out.mp4'
 
         videos_dict = {}
-        manim_file_name = self.file_path.name
+        manim_file_name = self.get_file_name(with_ext=False)
         for scene in self.scenes:
             videos_dict.setdefault(
                 scene.lower(),
                 self.get_video_name(scene)
             )
 
-        videos_path = self.output_dir / manim_file_name / 'videos'
+        videos_path = self.output_dir / 'videos' / manim_file_name
 
         with open(temp_name, 'w') as f:
-            for scene_name, video_name in videos_dict:
+            for scene_name, video_name in videos_dict.items():
                 full_path = videos_path / video_name
                 line = f'file \'{full_path}\'\n'
                 f.write(line)
@@ -101,6 +97,12 @@ class ManimRunner(object):
         assert scene_name in self._scenes_meta
         folder_name = self._scenes_meta[scene_name]
         return Path(folder_name) / f"{scene_name}{ext}"
+
+    def get_file_name(self, with_ext=True):
+        file_name = self.file_path.name
+        if with_ext:
+            return file_name
+        return file_name.split('.')[0]
 
     @staticmethod
     def clean_path(path):
@@ -146,7 +148,6 @@ class ManimRunner(object):
 
         elif any([arg in str_args for arg in ["-qk", "--fourk_quality", "--quality k"]]):
             return "2160p60"
-        
+
         elif any([arg in str_args for arg in ["-qp", "--production_quality", "--quality p"]]):
             return "1440p60"
-        
