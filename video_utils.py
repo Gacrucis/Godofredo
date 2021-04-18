@@ -100,7 +100,7 @@ class ManimRunner(object):
     def get_video_name(self, scene_name, ext=".mp4"):
         assert scene_name in self._scenes_meta
         folder_name = self._scenes_meta[scene_name]
-        return Path(folder_name / f"{scene_name}{ext}")
+        return Path(folder_name) / f"{scene_name}{ext}"
 
     @staticmethod
     def clean_path(path):

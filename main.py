@@ -1,11 +1,12 @@
-import compileutils
-import video_utils
 import os
 import sys
 from manim import *
 
 sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}')
 
+import compileutils
+import video_utils
+import presets
 
 UIS_GREEN = "#67b93e"
 
@@ -147,6 +148,21 @@ class Intro(MovingCameraScene):
 
         # self.play(FadeOut(utils.get_vmobjects_from_scene(self)), FadeOut(VGroup(g, lc_title, subtitle_auth)))
 
+class FirstChapter(MovingCameraScene):
+
+    def construct(self):
+        
+        chapter = presets.create_chapter(
+            title = 'El ataque de los patos',
+            subtitle = '4K FHD'
+        )
+
+        animations = chapter[0]
+
+        for animation in animations:
+            self.play(animation)
+
+        self.wait()
 
 class Test(Scene):
     def __init__(self, *args, **kwargs):
@@ -191,7 +207,7 @@ if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
             # 'Test': ['-p', '-qh'],
-            'Intro': ['-p', '-ql']
+            'FirstChapter': ['-p', '-qh']
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'

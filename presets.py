@@ -50,7 +50,11 @@ def create_bullet_point(text, text_color=WHITE, bullet_scale=0.8, bullet_color=N
 
     text_mobject = Tex(text, color=text_color, alignment=r'\raggedright')
     text_mobject.next_to(bullet, RIGHT, bullet_buff)
-    text_mobject.add_updater(lambda m: m.next_to(bullet, RIGHT, bullet_buff))
+
+    def text_updater(m):
+        m.next_to(bullet, direction=RIGHT, buff=bullet_buff)
+
+    text_mobject.add_updater(text_updater)
 
     bullet_point = VGroup(bullet, text_mobject)
     return bullet_point
@@ -96,8 +100,9 @@ def create_chapter(title, subtitle, color=MAROON_C, subtitle_buff=-0.5, scale_fa
     lc_title.scale(2 * scale_factor)
 
     anims.append(Write(lc_title))
-    anims.append(Animation(Point(), run_time=1))
-    anims.append(ApplyMethod(lc_title.move_to, UP))
+    # anims.append(Animation(Point(), run_time=1))
+    # anims.append(ApplyMethod(lc_title.move_to, UP))
+    anims.append(lc_title.animate.move_to(UP))
 
     subtitle = Tex(subtitle)
     subtitle.scale(scale_factor)
@@ -105,12 +110,12 @@ def create_chapter(title, subtitle, color=MAROON_C, subtitle_buff=-0.5, scale_fa
     subtitle.next_to(lc_title, DOWN, buff=subtitle_buff)
 
     anims.append(Write(subtitle))
-    anims.append(Animation(Point(), run_time=1))
+    # anims.append(Animation(Point(), run_time=1))
 
     title = VGroup(lc_title, subtitle)
 
     anims.append(FadeOutAndShift(title, direction=DOWN))
-    anims.append(Animation(Point(), run_time=1))
+    # anims.append(Animation(Point(), run_time=1))
 
     return [anims, VGroup(title, subtitle)]
 
