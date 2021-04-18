@@ -301,14 +301,14 @@ class Outro(Scene):
         mobs = VGroup()
 
         student_info = VGroup(
-            MathTex(r"\varepsilon \text{ José Silva }",
-                    color=DARK_SKY_BLUE, **self.names_config),
             MathTex(r"\gamma \text{ Edward Parada }",
-                    color=LIGHT_PURPLE,  **self.names_config),
-            MathTex(r"\mu \text{ Yuri Garcia }",
-                    color=SKY_BLUE, ** self.names_config),
-            MathTex(r"\pi \text{ Gian Estevez }",
+                    color=PURPLE,  **self.names_config),
+            MathTex(r"\Omega \text{ Gian Estevez }",
+                    color=LIGHT_PURPLE, **self.names_config),
+            MathTex(r"\varepsilon \text{ José Silva }",
                     color=VIOLET, **self.names_config),
+            MathTex(r"\mu \text{ Yuri Garcia }",
+                    color=DARK_SKY_BLUE, ** self.names_config),
         ).scale(0.7)
 
         author_scale = 0.7
@@ -414,11 +414,19 @@ if __name__ == "__main__":
             'FirstChapter': [
                 '-qh',
                 # '-p'
-            ],        
+            ],
+            'Bibliography': [
+                '-qh',
+                # '-p'
+            ], 
+            'Outro': [
+                '-qh',
+                # '-p'
+            ],         
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
     )
 
     runner.run_scenes()
-    # runner.concatenate_videos()
+    runner.concatenate_videos(run_output=True)

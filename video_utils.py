@@ -65,7 +65,7 @@ class ManimRunner(object):
         print(f"[RUNNER INFO] Executing {command}")
         os.system(command)
 
-    def concatenate_videos(self):
+    def concatenate_videos(self, run_output=False):
         if len(self.scenes) <= 1:
             print("[INFO] Requires 2 or more videos to concatenate.")
             return
@@ -92,6 +92,9 @@ class ManimRunner(object):
         os.system(ffmpeg_command)
 
         os.remove(temp_name)
+
+        if run_output:
+            os.system(f'start {output_name}')
 
     def get_video_name(self, scene_name, ext=".mp4"):
         assert scene_name in self._scenes_meta
