@@ -16,6 +16,8 @@ VIOLET = '#726e97'
 DARK_SKY_BLUE = '#7698b3'
 SKY_BLUE = '#83b5d1'
 
+PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
+
 
 class Intro(MovingCameraScene):
 
@@ -246,7 +248,7 @@ class Bibliography(Scene):
             dot.next_to(mob[0], LEFT, buff=.2)
             dots.add(dot)
 
-        header = Title("Bibliografia", **self.text_config)
+        header = Title("Bibliografía", **self.text_config)
 
         self.play(Write(header), run_time=2)
 
@@ -309,6 +311,10 @@ class Outro(Scene):
         self.gradient = [BLUE, YELLOW]
 
     def construct(self):
+
+        author_scale = 0.7
+        author_width = 2
+
         mobs = VGroup()
         header = Text("Creado por:", **self.text_config)
         mobs = VGroup()
@@ -322,73 +328,77 @@ class Outro(Scene):
                     color=VIOLET, **self.names_config),
             MathTex(r"\mu \text{ Yuri Garcia }",
                     color=DARK_SKY_BLUE, ** self.names_config),
-        ).scale(0.7)
+        ).scale(author_scale)
 
-        author_scale = 0.7
+        student_images = [
+            ImageMobject(filename_or_array=".\\assets\\images\\ed.png"),
+            ImageMobject(filename_or_array=".\\assets\\images\\ed.png"),
+            ImageMobject(filename_or_array=".\\assets\\images\\jose.png"),
+            ImageMobject(filename_or_array=".\\assets\\images\\jose.png"),
+        ]
 
-        jose = ImageMobject(filename_or_array=".\\assets\\images\\jose.png")
-        ed = ImageMobject(filename_or_array=".\\assets\\images\\jose.png")
-        yuri = ImageMobject(filename_or_array=".\\assets\\images\\jose.png")
-        gian = ImageMobject(
-            filename_or_array=".\\assets\\images\\jose.png")
+        for image in student_images:
+            image.width = author_width
 
-        start_coord = LEFT * 4.5 + DOWN * .6
-        buff = 1
+        start_coord = LEFT * 4.5 + UP * 1
+        student_buff = 1
 
-        jose.scale(author_scale).shift(start_coord)
-        yuri.scale(author_scale).next_to(jose, RIGHT, buff=buff)
-        ed.scale(author_scale).next_to(yuri, RIGHT, buff=buff)
-        gian.scale(author_scale).next_to(ed, RIGHT, buff=buff)
+        base_student = student_info[0]
+        base_student.move_to(start_coord)
 
-        student_info[0].next_to(jose, UP, buff=.3)
-        student_info[1].next_to(yuri, UP, buff=.3)
-        student_info[2].next_to(ed, UP, buff=.3)
-        student_info[3].next_to(gian, UP, buff=.3)
+        for prev, image in enumerate(student_info[1:]):
+            image.next_to(student_info[prev], RIGHT, buff=student_buff)
 
-        motor = Text("Motor de animacion: ",
-                     color=SKY_BLUE, **self.text_config)
+        for student, image in zip(student_info, student_images):
+            # image : Mobject
+            image.next_to(student, DOWN, buff=student_buff/2)
+
+        motor = Text(
+            "Motor de animación: ",
+            color=SKY_BLUE,
+            # **self.text_config
+        )
 
         banner = ManimBanner().scale(0.5)
 
         header.shift(UP*3 + LEFT*3)
         motor.shift(UP * 3 + LEFT * 3)
 
-        header.set_color_by_gradient(*[color.value for color in Palette])
+        header.set_color_by_gradient(*[color for color in PALETTE])
 
         # self.add(header.move_to(UP * 2.5), jose, yuri, ed, gian, student_info)
 
         self.play(
             DrawBorderThenFill(header),
-            MoveAlongPath(header,
-                          ArcBetweenPoints(
-                              header.get_center(), UP*2.5, angle=TAU/8), rate_func=exponential_decay),
-            run_time=3)
+            MoveAlongPath(
+                header,
+                ArcBetweenPoints(header.get_center(), UP*2.5, angle=TAU/8),
+                rate_func=exponential_decay
+            ),
+            run_time=3
+        )
 
         self.play(
-            FadeIn(jose),
-            FadeIn(yuri),
-            FadeIn(ed),
-            FadeIn(gian),
-            Write(student_info[0]),
-            Write(student_info[1]),
-            Write(student_info[2]),
-            Write(student_info[3]),
+            *[FadeIn(image) for image in student_images],
+            *[Write(student) for student in student_info],
         )
         mobs.add(student_info, header)
         self.wait(2)
         self.play(
-            FadeOutAndShift(jose, DOWN),
-            FadeOutAndShift(gian, DOWN),
-            FadeOutAndShift(ed, DOWN),
-            FadeOutAndShift(yuri, DOWN),
-            FadeOutAndShift(mobs, DOWN), run_time=3)
+            *[FadeOutAndShift(image, DOWN) for image in student_images],
+            FadeOutAndShift(mobs, DOWN),
+            run_time=3
+        )
 
         self.play(
             Write(motor),
-            MoveAlongPath(motor,
-                          ArcBetweenPoints(
-                              motor.get_center(), UP*2.5, angle=TAU/8), rate_func=exponential_decay),
-            run_time=3)
+            MoveAlongPath(
+                motor,
+                ArcBetweenPoints(motor.get_center(), UP*2.5, angle=TAU/8),
+                rate_func=exponential_decay
+            ),
+            run_time=3
+        )
         self.play(DrawBorderThenFill(banner), run_time=3)
         self.play(
             banner.animate.shift(RIGHT * 1.2),
@@ -402,8 +412,13 @@ class Outro(Scene):
 class Test(Scene):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
-                                   stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
+        self.uis_logo = SVGMobject(
+            file_name='.\\assets\\svg\\UIS.svg',
+            fill_opacity=0.7,
+            stroke_width=3,
+            color=UIS_GREEN,
+            stroke_color=WHITE
+        )
 
         self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
         self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
@@ -427,18 +442,18 @@ if __name__ == "__main__":
             #     '-sql',
             #     '-p'
             # ],
-            'FirstChapter': [
-                '-sql',
-                '-p'
-            ],
+            # 'FirstChapter': [
+            #     '-sql',
+            #     '-p'
+            # ],
             # 'Bibliography': [
             #     '-qh',
             #     # '-p'
             # ],
-            # 'Outro': [
-            #     '-ql',
-            #     '-p'
-            # ],
+            'Outro': [
+                '-ql',
+                '-p'
+            ],
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
