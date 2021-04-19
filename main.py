@@ -176,7 +176,16 @@ class FirstChapter(MovingCameraScene):
 
     def construct(self):
 
-        timeline = presets.create_timeline(
+        timeline = presets.TimeLine(
+            times=[
+                "3000 A.C.",
+                "Siglo III",
+                "Siglo XVI",
+                "Siglo XX",
+                "Nowadays"
+            ],
+            length=10,
+            arrow_scale=1,
             dot_colors=[
                 PURPLE,
                 LIGHT_PURPLE,
@@ -186,20 +195,21 @@ class FirstChapter(MovingCameraScene):
             ]
         )
 
-        animations = [DrawBorderThenFill(timeline)]
+        n = len(timeline.get_times())
 
-        timeline_dots = timeline[1]
-        timeline_arrow = Arrow(
-            start=timeline_dots[0].get_center()+UP,
-            end=timeline_dots[0].get_center(),
-            color=WHITE
+        # animations
+
+        self.play(
+            timeline.create(with_arrow=True, with_time=True),
+            run_time=2
         )
+        self.wait()
 
-        animations.append(Wait())
-        animations.append(DrawBorderThenFill(timeline_arrow))
-
-        for animation in animations:
-            self.play(animation)
+        for _ in range(n - 1):
+            self.play(
+                timeline.next_time(),
+                run_time=2
+            )
 
         self.wait()
 
@@ -412,23 +422,29 @@ class Outro(Scene):
 class Test(Scene):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.uis_logo = SVGMobject(
-            file_name='.\\assets\\svg\\UIS.svg',
-            fill_opacity=0.7,
-            stroke_width=3,
-            color=UIS_GREEN,
-            stroke_color=WHITE
-        )
-
-        self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
-        self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
-        self.uis_logo[0].set_fill(color=UIS_GREEN, opacity=.8)
-        self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
 
     def construct(self):
-        self.play(Write(self.uis_logo), run_time=2)
+        timeline = presets.TimeLine(
+            times=["3000 A.C.", "0 A.C.", "Siglo III",
+                   "Siglo XVI", "Siglo XX", "Nowadays"],
+            length=10,
+            arrow_scale=1,
+            dot_colors=[BLUE, GREEN, PURPLE, VIOLET, RED, SKY_BLUE]
+        )
+        n = len(timeline.get_times())
+        self.play(
+            timeline.create(with_arrow=True, with_time=True),
+            run_time=2
+        )
         self.wait()
-        self.play(VFadeOut(self.uis_logo), run_time=2)
+
+        for _ in range(n - 1):
+            self.play(
+                timeline.next_time(),
+                run_time=2
+            )
+
+        self.wait()
 
 
 if __name__ == "__main__":
@@ -442,18 +458,22 @@ if __name__ == "__main__":
             #     '-sql',
             #     '-p'
             # ],
-            # 'FirstChapter': [
-            #     '-sql',
-            #     '-p'
-            # ],
+            'FirstChapter': [
+                '-ql',
+                '-p'
+            ],
             # 'Bibliography': [
             #     '-qh',
             #     # '-p'
             # ],
-            'Outro': [
-                '-ql',
-                '-p'
-            ],
+            # 'Outro': [
+            #     '-ql',
+            #     '-p'
+            # ],
+            # 'Test': [
+            #     '-sql',
+            #     '-p'
+            # ]
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
