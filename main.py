@@ -3,10 +3,11 @@ import os
 import sys
 import itertools as it
 from colour import Color
-from manim import * # type: ignore
+from manim import *  # type: ignore
 
 import video_utils
 import presets
+
 
 UIS_GREEN = "#67b93e"
 PURPLE = '#673c4f'
@@ -15,38 +16,35 @@ VIOLET = '#726e97'
 DARK_SKY_BLUE = '#7698b3'
 SKY_BLUE = '#83b5d1'
 
+
 class Intro(MovingCameraScene):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.uis_logo = SVGMobject(file_name='.\\assets\\svg\\UIS.svg', fill_opacity=0.7,
-                                   stroke_width=3, color=UIS_GREEN, stroke_color=WHITE)
+        self.uis_logo = SVGMobject(
+            file_name='.\\assets\\svg\\UIS.svg').scale(1.2)
 
-        self.uis_logo[1].set_fill(color=WHITE, opacity=.8)
-        self.uis_logo[:2].set_stroke(color=UIS_GREEN, width=5)
-        self.uis_logo[0].set_fill(color=UIS_GREEN, opacity=.8)
-        self.uis_logo[2:5].set_fill(color=UIS_GREEN, opacity=.8)
+        self.uis_logo[1].set_fill(color=WHITE, opacity=.9)
+        self.uis_logo[5:].set_fill(color=WHITE, opacity=.9)
+
+        self.names_config = {
+            "stroke_width": 1,
+            "background_stroke_width": 5,
+            "background_stroke_color": BLACK,
+            "sheen_factor": .2,
+            "sheen_direction": UR,
+        }
 
     def construct(self):
-
-        self.play(Write(self.uis_logo), run_time=3)
-        self.wait(1.5)
-
-        self.play(FadeOut(self.uis_logo), run_time=1.5)
-
         title = Tex('HDLE')
         title.scale(2)
         title.align_on_border(UP, buff=2)
 
-        subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
+        subtitle = Tex(
+            'O como colocar datos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
         subtitle.set_color(DARK_SKY_BLUE)
-
-        self.play(Write(title))
-        self.play(Write(subtitle))
-
-        self.wait(0.8)
 
         author_scale = 0.7
         author_colors = it.cycle(
@@ -62,15 +60,18 @@ class Intro(MovingCameraScene):
         by = Tex("By:")
 
         authors = VGroup(
-            MathTex(r"\gamma \text{ Edward Parada - 2182070}"),
-            MathTex(r"\Omega \text{ Gian Estevez - 2102020}"),
-            MathTex(r"\varepsilon \text{ José Silva - 2183075}"),
-            MathTex(r"\mu \text{ Yuri Garcia - 2182697}")
+            MathTex(
+                r"\gamma \text{ Edward Parada - 2182070}", **self.names_config),
+            MathTex(
+                r"\Omega \text{ Gian Estevez - 2102020}", **self.names_config),
+            MathTex(
+                r"\varepsilon \text{ José Silva - 2183075}", **self.names_config),
+            MathTex(r"\mu \text{ Yuri Garcia - 2182697}", **self.names_config)
         ).scale(author_scale)
 
         base_author = authors[0]
         current_color = next(author_colors)
-        base_author.set_color(current_color) # type: ignore
+        base_author.set_color(current_color)  # type: ignore
 
         base_author.next_to(subtitle, DOWN, buff=1)
         base_author.align_on_border(LEFT, buff=2)
@@ -85,16 +86,11 @@ class Intro(MovingCameraScene):
             if author is not base_author:
                 author.align_to(base_author, LEFT)
 
-            author.set_color(current_color) # type: ignore
-            author_anims.append(Write(author)) # type: ignore
-
+            author.set_color(current_color)  # type: ignore
+            author_anims.append(Write(author))  # type: ignore
 
         by.scale(author_scale)
         by.next_to(base_author, LEFT, buff=.15)
-
-        # animations
-        self.play(Write(by))
-        self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
 
         lc_title_1 = Tex(
             'La vida es dura, ',
@@ -124,21 +120,36 @@ class Intro(MovingCameraScene):
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
         subtitle_auth.align_on_border(RIGHT, buff=1)
 
-        anim_group = AnimationGroup(
-            Write(lc_title), Write(subtitle_auth), lag_ratio=0.2)
+        # animations
+        self.play(Write(self.uis_logo), run_time=3)
+        self.wait(1.5)
 
-        self.play(anim_group, run_time=2.5)
+        # self.play(FadeOut(self.uis_logo), run_time=1.5)
 
-        self.wait(3)
+        # self.play(Write(title))
+        # self.play(Write(subtitle))
 
-        # lc_title.anim
+        # self.play(Write(by))
+        # self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
 
-        self.play(
-            FadeOut(presets.get_vmobjects_from_scene(self)), 
-            FadeOut(VGroup(authors, lc_title, subtitle_auth))
-        )
+        # self.wait(0.8)
 
-        self.wait()
+        # anim_group = AnimationGroup(
+        #     Write(lc_title), Write(subtitle_auth), lag_ratio=0.2)
+
+        # self.play(anim_group, run_time=2.5)
+
+        # self.wait(3)
+
+        # # lc_title.anim
+
+        # self.play(
+        #     FadeOut(presets.get_vmobjects_from_scene(self)),
+        #     FadeOut(VGroup(authors, lc_title, subtitle_auth))
+        # )
+
+        # self.wait()
+
 
 class FirstChapterIntro(MovingCameraScene):
 
@@ -158,10 +169,11 @@ class FirstChapterIntro(MovingCameraScene):
 
         self.wait()
 
+
 class FirstChapter(MovingCameraScene):
 
     def construct(self):
-        
+
         timeline = presets.create_timeline(
             dot_colors=[
                 PURPLE,
@@ -188,6 +200,7 @@ class FirstChapter(MovingCameraScene):
             self.play(animation)
 
         self.wait()
+
 
 class Bibliography(Scene):
     def __init__(self, *args, **kwargs):
@@ -289,7 +302,7 @@ class Outro(Scene):
             "stroke_width": 1,
             "background_stroke_width": 5,
             "background_stroke_color": BLACK,
-            # "sheen_factor": .9,
+            "sheen_factor": .1,
             "scale": 0.3,
             "sheen_direction": UR,
         }
@@ -340,7 +353,7 @@ class Outro(Scene):
         header.shift(UP*3 + LEFT*3)
         motor.shift(UP * 3 + LEFT * 3)
 
-        # header.set_color_by_gradient(*[color for color in Palette])
+        header.set_color_by_gradient(*[color.value for color in Palette])
 
         # self.add(header.move_to(UP * 2.5), jose, yuri, ed, gian, student_info)
 
@@ -351,15 +364,16 @@ class Outro(Scene):
                               header.get_center(), UP*2.5, angle=TAU/8), rate_func=exponential_decay),
             run_time=3)
 
-        self.play(FadeIn(jose),
-                  FadeIn(yuri),
-                  FadeIn(ed),
-                  FadeIn(gian),
-                  Write(student_info[0]),
-                  Write(student_info[1]),
-                  Write(student_info[2]),
-                  Write(student_info[3]),
-                  )
+        self.play(
+            FadeIn(jose),
+            FadeIn(yuri),
+            FadeIn(ed),
+            FadeIn(gian),
+            Write(student_info[0]),
+            Write(student_info[1]),
+            Write(student_info[2]),
+            Write(student_info[3]),
+        )
         mobs.add(student_info, header)
         self.wait(2)
         self.play(
@@ -370,18 +384,20 @@ class Outro(Scene):
             FadeOutAndShift(mobs, DOWN), run_time=3)
 
         self.play(
+            Write(motor),
             MoveAlongPath(motor,
                           ArcBetweenPoints(
                               motor.get_center(), UP*2.5, angle=TAU/8), rate_func=exponential_decay),
             run_time=3)
-        self.play(FadeIn(banner), run_time=3)
+        self.play(DrawBorderThenFill(banner), run_time=3)
         self.play(
-            banner.animate.shift(RIGHT),
-            run_time=0.6
+            banner.animate.shift(RIGHT * 1.2),
+            run_time=0.5
         )
         self.play(banner.expand())
         self.wait(2)
         self.play(FadeOut(banner), FadeOut(motor))
+
 
 class Test(Scene):
     def __init__(self, *args, **kwargs):
@@ -403,30 +419,30 @@ class Test(Scene):
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            'Intro': [
-                '-qh',
-                # '-p'
-            ],            
-            'FirstChapterIntro': [
-                '-qh',
-                # '-p'
-            ],        
+            # 'Intro': [
+            #     '-ql',
+            #     '-p'
+            # ],
+            # 'FirstChapterIntro': [
+            #     '-sql',
+            #     '-p'
+            # ],
             'FirstChapter': [
-                '-qh',
-                # '-p'
+                '-sql',
+                '-p'
             ],
-            'Bibliography': [
-                '-qh',
-                # '-p'
-            ], 
-            'Outro': [
-                '-qh',
-                # '-p'
-            ],         
+            # 'Bibliography': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Outro': [
+            #     '-ql',
+            #     '-p'
+            # ],
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
     )
 
     runner.run_scenes()
-    runner.concatenate_videos(run_output=True)
+    # runner.concatenate_videos(run_output=True)
