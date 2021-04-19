@@ -5,10 +5,10 @@ from manim import *
 
 class TimeLine(VGroup):
     def __init__(
-        self, times: list, length: float = None, time_buff: float = None, time_scale: float = None,
-        dot_scale: float = None, dot_colors: list = None, arrow_buff: float = None,
-        arrow_scale: float = None, line_config: dict = {}, arrow_config: dict = {},
-        time_config: dict = {}, dot_config: dict = {}, *args, **kwargs
+        self, times: list, length: float = None, direction: "ndarray" = None, time_buff: float = None,
+        time_scale: float = None, dot_scale: float = None, dot_colors: list = None, arrow_buff: float = None,
+        arrow_scale: float = None, line_config: dict = {}, arrow_config: dict = {}, time_config: dict = {},
+        dot_config: dict = {}, *args, **kwargs
     ):
         super().__init__(*args, **kwargs)
 
@@ -16,19 +16,52 @@ class TimeLine(VGroup):
         self.size = len(times)
 
         # control next time index and next dot index
-        self.next = [0, 0]
+        self.index_reference = {
+            'times': 0,
+            'dots': 0
+        }
+
+        if direction is RIGHT:
+            height_buff = 1.3
+
+            frame_height = Camera(None).frame_height
+
+
+            left_x_coord = LEFT * self.length / 2
+            left_y_coord = UP * (frame_height / 2 - height_buff)
+
+            # horizontally centered
+            self.end_point = -left_x_coord + left_y_coord
+
+            self.directions = {
+                'times': DOWN,
+                'arrow': UP,
+                'arrow_direction': DOWN
+            }
         
+        elif direction is DOWN:
+            left_buff = 1.3
 
-        height_buff = 1.3
-        frame_height = Camera(None).frame_height
+            frame_width = Camera(None).frame_width
 
-        left_x_coord = LEFT * self.length / 2
-        left_y_coord = UP * (frame_height / 2 - height_buff)
+
+            left_x_coord = LEFT * (frame_width / 2 - left_buff)
+            left_y_coord = UP * self.length / 2
+
+            # vertically centered
+            self.end_point = left_x_coord - left_y_coord
+
+            self.directions = {
+                'times': RIGHT,
+                'arrow': LEFT,
+                'arrow_direction': RIGHT
+            }
+        
+        else:
+            raise Exception("Expecting RIGHT or DOWN vectors only")
+
 
         self.initial_point = left_x_coord + left_y_coord
-
-        # horizontally centered
-        self.end_point = -left_x_coord + left_y_coord
 
         # create main line
 
@@ -37,6 +70,7 @@ class TimeLine(VGroup):
             end=self.end_point,
             **line_config
         )
+
         self.dots = VGroup()
         self.times = VGroup()
 
@@ -70,20 +104,22 @@ class TimeLine(VGroup):
 
             time_mob = Tex(time, **time_config).scale(time_scale)
 
-            time_mob.next_to(position, DOWN, time_buff)
+            time_mob.next_to(position, self.directions['times'], time_buff)
 
             self.times.add(time_mob)
-
+        
         # create arrow
+
         initial_dot_center = self.dots[0].get_center()
+        
         self.arrow = Arrow(
             start=ORIGIN,
-            end=DOWN,
+            end=self.directions['arrow_direction'],
             **arrow_config
         ).scale(arrow_scale)
 
         # predefine buff for next_time method works properly
-        self.arrow.next_to(self.dots[0], UP, buff=self.arrow_buff)
+        self.arrow.next_to(self.dots[0], self.directions['arrow'], buff=self.arrow_buff)
 
         if not "color" in arrow_config:
             self.arrow.set_color(default_arrow_color)
@@ -104,22 +140,24 @@ class TimeLine(VGroup):
         return self.line
 
     def get_next_time(self) -> Tex:
-        assert hasattr(self, "next")
-        if self.next[0] > self.size:
+        if self.index_reference['times'] > self.size:
             raise Exception("Next time exceeds size")
 
-        next_time = self.times[self.next[0]]
-        self.next[0] += 1
+        index = self.index_reference['times']
+
+        next_time = self.times[index]
+        self.index_reference['times'] += 1
 
         return next_time
 
     def get_next_dot(self) -> Dot:
-        assert hasattr(self, "next")
-        if self.next[1] > self.size:
+        if self.index_reference['dots'] > self.size:
             raise Exception("Next dot exceeds size")
 
-        next_dot = self.dots[self.next[1]]
-        self.next[1] += 1
+        index = self.index_reference['dots']
+
+        next_dot = self.dots[index]
+        self.index_reference['dots'] += 1
 
         return next_dot
 
@@ -134,12 +172,12 @@ class TimeLine(VGroup):
             )
 
         if with_time:
-            self.next[0] += 1 # increased next time index
+            self.index_reference['times'] += 1  # increased next time index
             animations.append(
                 Write(self.times[0])
             )
-        
-        self.next[1] += 1 # increases next dot index
+
+        self.index_reference['dots'] += 1  # increases next dot index
         return AnimationGroup(*animations)
 
     def next_time(self) -> AnimationGroup:
@@ -150,7 +188,7 @@ class TimeLine(VGroup):
         next_dot = self.get_next_dot()
 
         animations = [
-            self.arrow.animate.next_to(next_dot, UP, buff=self.arrow_buff),
+            self.arrow.animate.next_to(next_dot, self.directions['arrow'], buff=self.arrow_buff),
             Write(target_time)
         ]
 

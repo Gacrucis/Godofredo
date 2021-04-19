@@ -184,7 +184,8 @@ class FirstChapter(MovingCameraScene):
                 "Siglo XX",
                 "Nowadays"
             ],
-            length=10,
+            direction=DOWN,
+            length=5,
             arrow_scale=1,
             dot_colors=[
                 PURPLE,
