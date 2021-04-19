@@ -38,7 +38,7 @@ class Intro(MovingCameraScene):
         title.scale(2)
         title.align_on_border(UP, buff=2)
 
-        subtitle = Tex('O como colocar datos en términos de numeros (y viceversa)')
+        subtitle = Tex('O cómo colocar datos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
         subtitle.set_color(DARK_SKY_BLUE)
