@@ -5,10 +5,10 @@ from manim import *
 
 class TimeLine(VGroup):
     def __init__(
-        self, times: list, length: float = None, time_buff: float = None, time_scale: float = None,
-        dot_scale: float = None, dot_colors: list = None, arrow_buff: float = None,
-        arrow_scale: float = None, line_config: dict = {}, arrow_config: dict = {},
-        time_config: dict = {}, dot_config: dict = {}, *args, **kwargs
+        self, times: list, length: float = None, direction: "ndarray" = None, time_buff: float = None,
+        time_scale: float = None, dot_scale: float = None, dot_colors: list = None, arrow_buff: float = None,
+        arrow_scale: float = None, line_config: dict = {}, arrow_config: dict = {}, time_config: dict = {},
+        dot_config: dict = {}, *args, **kwargs
     ):
         super().__init__(*args, **kwargs)
 
@@ -16,27 +16,64 @@ class TimeLine(VGroup):
         self.size = len(times)
 
         # control next time index and next dot index
-        self.next = [0, 0]
+        self.index_reference = {
+            'times': 0,
+            'dots': 0
+        }
+
+        if direction is RIGHT:
+            height_buff = 1.3
+
+            frame_height = Camera(None).frame_height
+
+
+            left_x_coord = LEFT * self.length / 2
+            left_y_coord = UP * (frame_height / 2 - height_buff)
+
+            # horizontally centered
+            self.end_point = -left_x_coord + left_y_coord
+
+            self.directions = {
+                'times': DOWN,
+                'arrow': UP,
+                'arrow_direction': DOWN,
+                'scroll': LEFT
+            }
         
+        elif direction is DOWN:
+            left_buff = 1.3
 
-        height_buff = 1.3
-        frame_height = Camera(None).frame_height
+            frame_width = Camera(None).frame_width
 
-        left_x_coord = LEFT * self.length / 2
-        left_y_coord = UP * (frame_height / 2 - height_buff)
+
+            left_x_coord = LEFT * (frame_width / 2 - left_buff)
+            left_y_coord = UP * self.length / 2
+
+            # vertically centered
+            self.end_point = left_x_coord - left_y_coord
+
+            self.directions = {
+                'times': RIGHT,
+                'arrow': LEFT,
+                'arrow_direction': RIGHT,
+                'scroll': UP
+            }
+        
+        else:
+            raise Exception("Expecting RIGHT or DOWN vectors only")
+
 
         self.initial_point = left_x_coord + left_y_coord
-
-        # horizontally centered
-        self.end_point = -left_x_coord + left_y_coord
 
         # create main line
 
         self.line = Line(
             start=self.initial_point,
             end=self.end_point,
+            z_index=0,
             **line_config
         )
+
         self.dots = VGroup()
         self.times = VGroup()
 
@@ -44,7 +81,7 @@ class TimeLine(VGroup):
         time_scale = time_scale or 0.6
         arrow_scale = arrow_scale or 1
 
-        time_buff = time_buff or 0.5
+        self.time_buff = time_buff or 0.5
         self.arrow_buff = arrow_buff = arrow_buff or 0.3
 
         # default colors
@@ -62,28 +99,26 @@ class TimeLine(VGroup):
         for n, time in enumerate(times):
             position = self.line.point_from_proportion(point_distance * n)
 
-            dot = Dot(**dot_config).scale(dot_scale).move_to(position)
-
+            dot = Dot(z_index=1, **dot_config).scale(dot_scale).move_to(position)
             dot.set_color(dot_colors[n])
 
             self.dots.add(dot)
 
-            time_mob = Tex(time, **time_config).scale(time_scale)
-
-            time_mob.next_to(position, DOWN, time_buff)
+            time_mob = Tex(time, z_index=1, **time_config).scale(time_scale)
+            time_mob.next_to(position, self.directions['times'], self.time_buff)
 
             self.times.add(time_mob)
 
         # create arrow
-        initial_dot_center = self.dots[0].get_center()
+
         self.arrow = Arrow(
             start=ORIGIN,
-            end=DOWN,
+            end=self.directions['arrow_direction'],
             **arrow_config
         ).scale(arrow_scale)
 
         # predefine buff for next_time method works properly
-        self.arrow.next_to(self.dots[0], UP, buff=self.arrow_buff)
+        self.arrow.next_to(self.dots[0], self.directions['arrow'], buff=self.arrow_buff)
 
         if not "color" in arrow_config:
             self.arrow.set_color(default_arrow_color)
@@ -91,10 +126,66 @@ class TimeLine(VGroup):
         self.add(
             self.line,
             *self.dots,
-            *self.times
+            *self.times,
+            self.arrow
         )
 
-    def get_points(self) -> VGroup:
+    def shift(self, direction: "ndarray") -> "TimeLine":
+        self.line.shift(direction)
+        current_dot = self.get_current_dot()
+        self.arrow.next_to(current_dot, self.directions['arrow'], self.arrow_buff)
+    
+    def next_to(self, *args, **kwargs) -> "TimeLine":
+        line = self.get_line()
+
+        line.next_to(*args, **kwargs)
+
+        self.position_elements()
+        
+        return self
+    
+    def position_dots(self) -> None:
+        point_distance = 1 / (self.size - 1)
+        line = self.get_line()
+        dots = self.get_dots()
+
+        for n, dot in enumerate(dots):
+            dot.move_to(
+                line.point_from_proportion(point_distance * n)
+            )
+        
+    def position_times(self) -> None:
+        point_distance = 1 / (self.size - 1)
+        line = self.get_line()
+        times = self.get_times()
+
+        for n, time in enumerate(times):
+            time.move_to(
+                line.point_from_proportion(point_distance * n)
+            )
+
+    def position_elements(self) -> None:
+        """
+            Position dots, times and arrow
+        """
+        point_distance = 1 / (self.size - 1)
+
+        line = self.get_line()
+        times = self.get_times()
+        dots = self.get_dots()
+        arrow = self.get_arrow()
+
+        for n in range(self.size):
+            position = line.point_from_proportion(point_distance * n)
+
+            times[n].next_to(position, self.directions['times'], buff=self.time_buff)
+            dots[n].move_to(position)
+        
+        current_dot = self.get_current_dot()
+
+        arrow.next_to(current_dot, self.directions['arrow'], self.arrow_buff)
+
+    def get_dots(self) -> VGroup:
         return self.dots
 
     def get_times(self) -> VGroup:
@@ -103,25 +194,44 @@ class TimeLine(VGroup):
     def get_line(self) -> Line:
         return self.line
 
+    def get_arrow(self) -> Arrow:
+        return self.arrow
+
     def get_next_time(self) -> Tex:
-        assert hasattr(self, "next")
-        if self.next[0] > self.size:
+        if self.index_reference['times'] > self.size:
             raise Exception("Next time exceeds size")
 
-        next_time = self.times[self.next[0]]
-        self.next[0] += 1
+        index = self.index_reference['times']
+
+        next_time = self.times[index]
+        self.index_reference['times'] += 1
 
         return next_time
 
+    def get_current_time(self) -> Tex:
+        current_time_index = self.index_reference['times'] - 1
+        if current_time_index < 0:
+            current_time_index = 0
+        
+        return self.times[current_time_index]
+
     def get_next_dot(self) -> Dot:
-        assert hasattr(self, "next")
-        if self.next[1] > self.size:
+        if self.index_reference['dots'] > self.size:
             raise Exception("Next dot exceeds size")
 
-        next_dot = self.dots[self.next[1]]
-        self.next[1] += 1
+        index = self.index_reference['dots']
+
+        next_dot = self.dots[index]
+        self.index_reference['dots'] += 1
 
         return next_dot
+
+    def get_current_dot(self) -> Dot:
+        current_dot_index = self.index_reference['dots'] - 1
+        if current_dot_index < 0:
+            current_dot_index = 0
+        
+        return self.dots[current_dot_index]
 
     def create(self, with_arrow: bool = False, with_time: bool = False) -> AnimationGroup:
         animations = [
@@ -134,12 +244,12 @@ class TimeLine(VGroup):
             )
 
         if with_time:
-            self.next[0] += 1 # increased next time index
+            self.index_reference['times'] += 1  # increased next time index
             animations.append(
                 Write(self.times[0])
             )
-        
-        self.next[1] += 1 # increases next dot index
+
+        self.index_reference['dots'] += 1  # increases next dot index
         return AnimationGroup(*animations)
 
     def next_time(self) -> AnimationGroup:
@@ -150,7 +260,42 @@ class TimeLine(VGroup):
         next_dot = self.get_next_dot()
 
         animations = [
-            self.arrow.animate.next_to(next_dot, UP, buff=self.arrow_buff),
+            self.arrow.animate.next_to(next_dot, self.directions['arrow'], buff=self.arrow_buff),
+            Write(target_time)
+        ]
+
+        return AnimationGroup(*animations)
+    
+    def next_time_scroll(self) -> AnimationGroup:
+        """
+            make scroll effect by shifting
+            self.line up or right
+        """
+        current_dot = self.get_current_dot()
+        next_dot = self.get_next_dot()
+
+        dots_distance = abs(current_dot.get_center() - next_dot.get_center())
+
+
+        first_time = self.get_times()[0]
+        current_time = self.get_current_time()
+        target_time = self.get_next_time()
+
+        target_time.add_updater(
+            lambda mob: mob.next_to(next_dot, self.directions['times'], self.time_buff)
+        )
+
+        if current_time is first_time:
+
+            first_dot = self.get_dots()[0]
+
+            current_time.add_updater(
+                lambda mob: mob.next_to(first_dot, self.directions['times'], self.time_buff)
+            )
+
+        animations = [
+            self.line.animate.shift(self.directions['scroll'] * dots_distance),
+            self.dots.animate.shift(self.directions['scroll'] * dots_distance),
             Write(target_time)
         ]
 
@@ -164,6 +309,73 @@ class TimeLine(VGroup):
             FadeOut(self.times)
         ]
         return AnimationGroup(*animations)
+
+    def _load_from(self, target_time: str, scene_class: "Scene"=None) -> VGroup:
+        """
+            - get times that should have been shown
+            before 'time' including 'target_time'
+            - shift arrow to 'time'
+        """
+        times_string = [mob_time.get_tex_string() for mob_time in self.times]
+
+        if not target_time in set(times_string):
+            raise Exception(f'{target_time} is not a valid time')
+        
+        self.times[0].get_tex_string()
+
+        target_index = [
+            index 
+            for index, time_str in enumerate(times_string) 
+            if time_str == target_time
+        ][0]
+
+        return self.times[:target_index + 1]
+
+    def _attach_to_dot(self, target_time: Tex, dot: Dot) -> Tex:
+        target_time.add_updater(
+            lambda mob: mob.next_to(dot, self.directions['times'], self.time_buff)
+        )
+        return target_time
+
+    def preload_for_scene(self, target_time: str, scene: "Scene", with_arrow: bool=True) -> None:
+        """
+            load times previous to 'target_time' (including target_time) and 
+            add them directly to the scene_class
+        """
+        previous_times = self._load_from(target_time)
+        new_index = len(previous_times)
+
+        dots = self.get_dots()
+        first_dot = dots[0]
+
+        self.index_reference['dots'] = new_index
+        self.index_reference['times'] = new_index
+
+        # once index_reference is updated current_dot is right
+        current_dot = self.get_current_dot()
+
+        # calculates the corresponding shift based on number of previous times
+        shift_size = abs(first_dot.get_center() - current_dot.get_center())
+        line = self.get_line()
+
+        line.shift(self.directions['scroll'] * shift_size)
+        dots.shift(self.directions['scroll'] * shift_size)
+
+        # add updaters to the times
+
+        [
+            self._attach_to_dot(time, dot) 
+            for time, dot in zip(previous_times, dots)
+        ]
+        
+        scene.add(
+            line,
+            dots,
+            *previous_times
+        )
+
+        if with_arrow:
+            scene.add(self.arrow)
 
 
 def get_vmobjects_from_scene(scene):

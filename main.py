@@ -15,6 +15,7 @@ LIGHT_PURPLE = '#7f557d'
 VIOLET = '#726e97'
 DARK_SKY_BLUE = '#7698b3'
 SKY_BLUE = '#83b5d1'
+BEIGE = '#7c795d'
 
 PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
 
@@ -173,29 +174,77 @@ class FirstChapterIntro(MovingCameraScene):
 
 
 class FirstChapter(MovingCameraScene):
-
-    def construct(self):
-
-        timeline = presets.TimeLine(
-            times=[
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.text_config = {
+            'color': BEIGE,
+            "stroke_width": 0.7,
+            "background_stroke_width": 5,
+            "background_stroke_color": BLACK,
+            "sheen_factor": .2,
+            "sheen_direction": UR,
+        }
+        self.timeline_config = {
+            "times" : [
                 "3000 A.C.",
                 "Siglo III",
                 "Siglo XVI",
                 "Siglo XX",
                 "Nowadays"
             ],
-            length=10,
-            arrow_scale=1,
-            dot_colors=[
+            "direction": DOWN,
+            "length": 10,
+            "arrow_scale": 1,
+            "time_buff": 0.25,
+            "time_scale": 0.4,
+            "dot_colors": [
                 PURPLE,
                 LIGHT_PURPLE,
                 VIOLET,
                 DARK_SKY_BLUE,
                 SKY_BLUE
             ]
-        )
+        }
 
-        n = len(timeline.get_times())
+        self.ref_point = coord(-6, 3)
+        self.image_start_point = self.ref_point + coord(4, -3)
+        self.txt_up_shift = UP * 0.5
+
+    def construct(self):
+
+        # time line
+
+        timeline = presets.TimeLine(**self.timeline_config)
+        timeline.next_to(self.ref_point, DOWN, buff=0)
+
+        # images and text
+
+        fisher = ImageMobject(filename_or_array=image_path('fisher.jpg'))
+        fisher.scale(1.5).move_to(self.image_start_point)
+
+        fisher_txt = VGroup(
+            Tex("Fue un estadistico que revoluciono la manera en ", **self.text_config),
+            Tex("como se enseñaba sistemas de informacion en la UIS.", **self.text_config)
+        ).scale(0.6)
+        
+        # left align the text
+        fisher_txt.arrange(DOWN, center=False, aligned_edge=LEFT)
+
+        fisher_txt.next_to(fisher, RIGHT, buff=0.5).shift(self.txt_up_shift)
+
+        # src: https://vjmpublishing.nz/?p=15691
+        alchemy = ImageMobject(filename_or_array=image_path('alchemy.jpg'))
+        alchemy.scale(0.8).align_on_border(RIGHT,buff=1)
+
+        alchemy_txt = VGroup(
+            Tex("La alquimia jugo un papel importante ", **self.text_config),
+            Tex("en como las personas justificaban", **self.text_config),
+            Tex("el voto por Duque", **self.text_config)
+        ).scale(0.6)
+
+        # right align text
+        alchemy_txt.arrange(DOWN, center=False, aligned_edge=RIGHT)
+        alchemy_txt.next_to(alchemy, LEFT, buff=0.3).shift(self.txt_up_shift)        
 
         # animations
 
@@ -205,14 +254,98 @@ class FirstChapter(MovingCameraScene):
         )
         self.wait()
 
-        for _ in range(n - 1):
-            self.play(
-                timeline.next_time(),
-                run_time=2
-            )
+        self.play(
+            FadeIn(fisher),
+            AnimationGroup(
+                Wait(0.5),
+                Write(fisher_txt),
+                lag_ratio=1
+            ),
+            run_time=2
+        )
+
+        self.play(
+            timeline.next_time_scroll(),
+            FadeOutAndShift(fisher, UP * 2),
+            FadeOutAndShift(fisher_txt, UP * 2),
+            AnimationGroup(
+                Wait(1),
+                FadeInFrom(alchemy, DOWN * 2),
+                FadeInFrom(alchemy_txt, DOWN * 2),
+                lag_ratio=1
+            ),
+            run_time=3
+        )
 
         self.wait()
 
+class SecondChapter(FirstChapter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ref_point = coord(-6, 3)
+        last_time_in_previous_scene = "Siglo III"
+
+        self.timeline = presets.TimeLine(**self.timeline_config)
+        self.timeline.next_to(self.ref_point, DOWN, buff=0)
+
+        self.timeline.preload_for_scene(
+            target_time=last_time_in_previous_scene,
+            scene=self # pass the scene as parameter
+        )
+
+        # create last image and text
+
+        self.prev_img = ImageMobject(filename_or_array=image_path('alchemy.jpg'))
+        self.prev_img.scale(0.8).align_on_border(RIGHT,buff=1)
+
+        self.prev_txt = VGroup(
+            Tex("La alquimia jugo un papel importante ", **self.text_config),
+            Tex("en como las personas justificaban", **self.text_config),
+            Tex("el voto por Duque", **self.text_config)
+        ).scale(0.6)
+
+        self.prev_txt.arrange(DOWN, center=False, aligned_edge=RIGHT)
+        self.prev_txt.next_to(self.prev_img, LEFT, buff=0.3).shift(self.txt_up_shift)
+
+        self.add(self.prev_img, self.prev_txt)
+    
+    def construct(self):
+        images_start_point = self.ref_point + coord(4, -3)
+        txt_up_shift = UP * 0.5
+
+        # src: https://www.nationalgeographic.org/article/key-components-civilization/
+        old_stats = ImageMobject(filename_or_array=image_path('old_statistics.jpg'))
+        old_stats.scale(0.5).move_to(self.image_start_point)
+
+        old_stats_txt = VGroup(
+            Tex("La estadistica en sus tiempos primigenios", **self.text_config),
+            Tex("ayudó a los estados a recopilar informacion", **self.text_config),
+            Tex("relevante en cuanto a los resultados en ", **self.text_config),
+            Tex("las guerras", **self.text_config)
+        ).scale(0.6)
+
+        # left align text
+        old_stats_txt.arrange(DOWN, center=False, aligned_edge=LEFT)
+        old_stats_txt.next_to(old_stats, RIGHT, buff=0.3).shift(self.txt_up_shift)
+
+        # animations
+
+        # self.add(self.timeline, old_stats, old_stats_txt)
+
+        self.play(
+            self.timeline.next_time_scroll(),
+            FadeOutAndShift(self.prev_img, UP * 2),
+            FadeOutAndShift(self.prev_txt, UP * 2),
+            AnimationGroup(
+                Wait(1),
+                FadeInFrom(old_stats, DOWN * 2),
+                FadeInFrom(old_stats_txt, DOWN * 2),
+                lag_ratio=1
+            ),
+            run_time=3
+        )
+
+        self.wait()
 
 class Bibliography(Scene):
     def __init__(self, *args, **kwargs):
@@ -341,10 +474,10 @@ class Outro(Scene):
         ).scale(author_scale)
 
         student_images = [
-            ImageMobject(filename_or_array=".\\assets\\images\\ed.png"),
-            ImageMobject(filename_or_array=".\\assets\\images\\ed.png"),
-            ImageMobject(filename_or_array=".\\assets\\images\\jose.png"),
-            ImageMobject(filename_or_array=".\\assets\\images\\jose.png"),
+            ImageMobject(filename_or_array=image_path("ed.png")),
+            ImageMobject(filename_or_array=image_path("ed.png")),
+            ImageMobject(filename_or_array=image_path("jose.png")),
+            ImageMobject(filename_or_array=image_path("jose.png")),
         ]
 
         for image in student_images:
@@ -446,6 +579,14 @@ class Test(Scene):
 
         self.wait()
 
+def image_path(name: str) -> str:
+    path = os.path.join("assets", "images", name)
+    if not os.path.exists(path):
+        raise Exception(f"{path} does not exist.")
+    return path
+
+def coord(x: float, y: float) -> "ndarray":
+    return RIGHT * x + UP * y
 
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
@@ -459,7 +600,11 @@ if __name__ == "__main__":
             #     '-p'
             # ],
             'FirstChapter': [
-                '-ql',
+                '-qh',
+                '-p'
+            ],
+            'SecondChapter': [
+                '-qh',
                 '-p'
             ],
             # 'Bibliography': [
@@ -480,4 +625,4 @@ if __name__ == "__main__":
     )
 
     runner.run_scenes()
-    # runner.concatenate_videos(run_output=True)
+    runner.concatenate_videos(run_output=True)
