@@ -459,7 +459,7 @@ class SecondChapter(FirstChapter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ref_point = coord(-6, 3)
-        last_time_in_previous_scene = "Siglo III"
+        last_time_in_previous_scene = "594 A.C."
 
         self.timeline = presets.TimeLine(**self.timeline_config)
         self.timeline.next_to(self.ref_point, DOWN, buff=0)
@@ -777,12 +777,12 @@ if __name__ == "__main__":
             # ],
             'FirstChapter': [
                 '-qh',
-                '-p'
+                # '-p'
             ],
-            # 'SecondChapter': [
-            #     '-qh',
-            #     '-p'
-            # ],
+            'SecondChapter': [
+                '-qh',
+                # '-p'
+            ],
             # 'Bibliography': [
             #     '-qh',
             #     # '-p'
@@ -801,4 +801,4 @@ if __name__ == "__main__":
     )
 
     runner.run_scenes()
-    # runner.concatenate_videos(run_output=True)
+    runner.concatenate_videos(run_output=True)
