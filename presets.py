@@ -381,6 +381,70 @@ class TimeLine(VGroup):
             scene.add(self.arrow)
 
 
+
+class PTex(Tex):
+    def __init__(
+        self, 
+        text: str, 
+        alignment: str = "center", 
+        line_length: int = 40, 
+        interline_space: float = MED_LARGE_BUFF,
+        tex_environment: str = None, 
+        **kwargs
+    ):
+        line_separated = [
+            line + "\\\\"
+            for line in self.text_to_lines(text, line_length=line_length)
+        ]
+        super().__init__(*line_separated, **kwargs)
+
+        self.arrange(
+            **{
+                "direction": DOWN,
+                "aligned_edge": LEFT if alignment == "left" else RIGHT,
+                "center": True if alignment == "center" else False,
+                "buff": interline_space
+            }
+        )
+    
+    def text_to_lines(self, text: str, line_length: int = 40) -> list:git 
+        text = text.strip()
+        text_length = len(text)
+        line_amount = text_length // line_length
+        text_lines = []
+
+        text_words = text.split(' ')
+        current_word_index = 0
+        min_length = 9999
+        min_line = 0
+
+        for i in range(line_amount):
+            current_line = []
+            current_length = 0
+
+            while current_length < line_length and current_word_index < len(text_words):
+                current_word = text_words[current_word_index]
+
+                current_line.append(current_word)
+                current_length += len(current_word) + 1
+                current_word_index += 1
+            
+            text_lines.append(current_line)
+
+            if current_length < min_length:
+                min_length = current_length
+                min_line = i
+        
+        if current_word_index <= (len(text_words)-1):
+            text_lines.append(
+                text_words[current_word_index:]
+            )
+
+        processed_lines = [' '.join(line) for line in text_lines]
+        processed_lines = [line.strip() for line in processed_lines]
+
+        return processed_lines
+
 def get_vmobjects_from_scene(scene):
 
     mobjects = scene.mobjects
