@@ -370,7 +370,7 @@ class TimeLine(VGroup):
             self._attach_to_dot(time, dot) 
             for time, dot in zip(previous_times, dots)
         ]
-        
+
         scene.add(
             line,
             dots,
@@ -601,26 +601,30 @@ def text_to_lines(text, line_length=40):
             min_length = current_length
             min_line = i
     
-    if current_word_index < (len(text_words)-1):
-        
-        for line in text_lines[min_line:-1]:
-            line.append(text_lines[current_word_index+1].pop(0))
+    if current_word_index <= (len(text_words)-1):
+        text_lines.append(
+            text_words[current_word_index:]
+        )
+        # for line in text_lines[min_line:-1]:
+            # line.append(text_lines[current_word_index+1].pop(0))
 
-            current_word_index += 1
+            # current_word_index += 1
         
-        text_lines[-1].append(text_words[-1])
+        # text_lines[-1].append(text_words[-1])
 
     processed_lines = [' '.join(line) for line in text_lines]
     processed_lines = [line.strip() for line in processed_lines]
 
     return processed_lines
 
+
 def text_to_paragraph(text, line_length=40, **kwargs):
 
     lines = text_to_lines(text, line_length=line_length)
-    
-    return Paragraph('\n'.join(lines), **kwargs)
 
+    print(lines)
+    
+    return Paragraph(*lines, **kwargs)
 
 def image_path(name: str, folder_path=['assets', 'images']) -> str:
     path = os.path.join(*folder_path, name)
