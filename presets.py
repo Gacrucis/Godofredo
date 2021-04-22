@@ -91,7 +91,9 @@ class TimeLine(VGroup):
         default_arrow_color = WHITE
 
         if not dot_colors:
-            dot_colors = [default_dots_color] * self.size
+            dot_colors = [default_dots_color]
+        
+        dot_colors = cycle(dot_colors)
 
         point_distance = 1 / (self.size - 1)
 
@@ -101,7 +103,7 @@ class TimeLine(VGroup):
             position = self.line.point_from_proportion(point_distance * n)
 
             dot = Dot(z_index=1, **dot_config).scale(dot_scale).move_to(position)
-            dot.set_color(dot_colors[n])
+            dot.set_color(next(dot_colors))
 
             self.dots.add(dot)
 
