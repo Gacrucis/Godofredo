@@ -19,6 +19,21 @@ BEIGE = '#7c795d'
 
 PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
 
+TIMELINE_TIMES = [
+    "Epoca antigua",
+    "3000 A.C.",
+    "Biblia",
+    "762 A.C.",
+    "594 A.C.",
+    "1066",
+    "Siglo XVI", # General y Colombia
+    "1800", # Colombia
+    "Siglo XX", # General y Colombia
+    "2000", # Colombia
+    "2020" # Colombia
+]
+
+TIMELINE_LENGTH = 20
 
 class Intro(MovingCameraScene):
 
@@ -160,7 +175,7 @@ class FirstChapterIntro(MovingCameraScene):
 
         chapter = presets.create_chapter(
             title='Inicios de la estadística',
-            subtitle='Érase una vez un hombre con muchas manzanas . . .',
+            subtitle='El comienzo de un servicio del estado para el pueblo',
             scale_factor=0.9,
             color=PURPLE
         )
@@ -184,16 +199,21 @@ class FirstChapter(MovingCameraScene):
             "sheen_factor": .2,
             "sheen_direction": UR,
         }
+        self.title_config = {
+            **self.text_config,
+            'color': VIOLET
+        }
+        self.source_config = {
+            'color': GRAY,
+            "stroke_width": 0.7,
+            "background_stroke_width": 5,
+            "background_stroke_color": BLACK,
+        }
+
         self.timeline_config = {
-            "times" : [
-                "3000 A.C.",
-                "Siglo III",
-                "Siglo XVI",
-                "Siglo XX",
-                "Nowadays"
-            ],
+            "times" : TIMELINE_TIMES,
             "direction": DOWN,
-            "length": 10,
+            "length": TIMELINE_LENGTH,
             "arrow_scale": 1,
             "time_buff": 0.25,
             "time_scale": 0.4,
@@ -217,7 +237,85 @@ class FirstChapter(MovingCameraScene):
         timeline = presets.TimeLine(**self.timeline_config)
         timeline.next_to(self.ref_point, DOWN, buff=0)
 
+        header = Tex(
+            "Historia de la ",
+            "Estádistica",
+            **self.title_config
+        ).scale(1.2)
+
+        header.align_on_border(UP, buff=0.8)
+
+        equal = MathTex("=", **self.text_config)
+
+        etimology = VGroup(
+            header[18:],
+            Tex(
+                "Stat","istic","us",
+                **self.text_config
+            ),
+            Tex(
+                "Status",
+                **self.text_config
+            ).set_color(RED)
+        )
+
+        to_highlight = VGroup(
+            etimology[1][0],
+            etimology[1][-1]
+        )
+
         # images and text
+
+        manuscript = {
+            "image": ImageMobject(filename_or_array=image_path('.\\history\\1_manuscrito.jpeg')),
+            "title": Tex(
+                "Manuscrito recuperado",
+                **self.text_config
+            ),
+            "src": Tex(
+                "https://bit.ly/3dJRdQ5",
+                **self.source_config
+            )
+        }
+        emperor = {
+            "image": ImageMobject(filename_or_array=image_path('.\\history\\2_emperador_chino.jpg')),
+            "title": Tex(
+                "Dinastia china",
+                **self.text_config
+            ),
+            "src": Tex(
+                "https://bit.ly/3v7qBy8",
+                **self.source_config
+            )
+        }
+        players = {
+            "image": ImageMobject(filename_or_array=image_path('.\\history\\3_jugadores_dados.jpg')),
+            "title": Tex(
+                "Nacimiento de las probabilidades",
+                **self.text_config
+            ),
+            "src": Tex(
+                "https://bit.ly/2QkTLLi",
+                **self.source_config
+            )
+        }
+
+        src_scale=0.4
+        image_space_between=1.3
+
+        manuscript["image"].scale(1.2).align_on_border(LEFT, buff=1)
+        emperor["image"].scale(0.8).next_to(manuscript["image"], buff=image_space_between)
+        players["image"].scale(1.7).next_to(emperor["image"], buff=image_space_between)
+
+        manuscript["title"].scale(0.5).next_to(manuscript["image"], UP, buff=0.3)
+        emperor["title"].scale(0.6).next_to(emperor["image"], UP, buff=0.3)
+        players["title"].scale(0.5).next_to(players["image"], UP, buff=0.3)
+
+        manuscript["src"].scale(src_scale).next_to(manuscript["image"], DOWN, buff=0.1)
+        emperor["src"].scale(src_scale).next_to(emperor["image"], DOWN, buff=0.1)
+        players["src"].scale(src_scale).next_to(players["image"], DOWN, buff=0.1)
+
+
 
         fisher = ImageMobject(filename_or_array=image_path('fisher.jpg'))
         fisher.scale(1.5).move_to(self.image_start_point)
@@ -249,35 +347,113 @@ class FirstChapter(MovingCameraScene):
         # animations
 
         self.play(
-            timeline.create(with_arrow=True, with_time=True),
-            run_time=2
-        )
-        self.wait()
-
-        self.play(
-            FadeIn(fisher),
-            AnimationGroup(
-                Wait(0.5),
-                Write(fisher_txt),
-                lag_ratio=1
-            ),
+            Write(header),
             run_time=2
         )
 
         self.play(
-            timeline.next_time_scroll(),
-            FadeOutAndShift(fisher, UP * 2),
-            FadeOutAndShift(fisher_txt, UP * 2),
+            FadeIn(manuscript["image"]),
+            FadeIn(emperor["image"]),
+            FadeIn(players["image"]),
             AnimationGroup(
                 Wait(1),
-                FadeInFrom(alchemy, DOWN * 2),
-                FadeInFrom(alchemy_txt, DOWN * 2),
+                Write(manuscript["title"]),
+                Write(emperor["title"]),
+                Write(players["title"]),
+                lag_ratio=1
+            ),
+            AnimationGroup(
+                Wait(1.8),
+                Write(manuscript["src"]),
+                Write(emperor["src"]),
+                Write(players["src"]),
                 lag_ratio=1
             ),
             run_time=3
         )
+        self.wait()
+
+        self.play(
+            header[1].animate.move_to(LEFT * 2).match_height(etimology[-1]),
+            FadeOut(header[0]),
+            FadeOut(manuscript["image"]),
+            FadeOut(emperor["image"]),
+            FadeOut(players["image"]),
+            FadeOut(
+                VGroup(
+                    manuscript["title"],
+                    emperor["title"],
+                    players["title"],
+                    manuscript["src"],
+                    emperor["src"],
+                    players["src"]
+                )
+            ),
+            run_time=2
+        )
+        header = header[1]
+        etimology[1].next_to(equal, RIGHT, buff=0.2)
+
+        self.play(
+            header.animate.next_to(equal, LEFT, buff=0.2),
+            FadeInFrom(equal, direction=equal.get_center()),
+            Write(etimology[1]),
+            run_time=0.8
+        )
+
+        self.play(
+            etimology[1].animate.move_to(ORIGIN),
+            FadeOut(equal),
+            FadeOut(header),
+            run_time=2
+        )
+
+        self.play(
+            Indicate(to_highlight, scale_factor=1.1, color=RED)
+        )
+
+        self.play(
+            to_highlight[0].animate.next_to(ORIGIN, LEFT,buff=0.01),
+            to_highlight[1].animate.next_to(ORIGIN, RIGHT,buff=0).align_to(to_highlight[0], DOWN),
+            FadeOut(etimology[1][1]),
+            run_time=1
+        )
 
         self.wait()
+
+        self.play(
+            FadeOut(to_highlight),
+            timeline.create(with_arrow=True, with_time=True),
+            run_time=2
+        )
+
+        self.wait()
+
+        # self.play(
+        #     FadeIn(fisher),
+        #     AnimationGroup(
+        #         Wait(0.5),
+        #         Write(fisher_txt),
+        #         lag_ratio=1
+        #     ),
+        #     run_time=2
+        # )
+
+        # self.play(
+        #     timeline.next_time_scroll(),
+        #     FadeOutAndShift(fisher, UP * 2),
+        #     FadeOutAndShift(fisher_txt, UP * 2),
+        #     AnimationGroup(
+        #         Wait(1),
+        #         FadeInFrom(alchemy, DOWN * 2),
+        #         FadeInFrom(alchemy_txt, DOWN * 2),
+        #         lag_ratio=1
+        #     ),
+        #     run_time=3
+        # )
+
+        # self.wait()
+
 
 class SecondChapter(FirstChapter):
     def __init__(self, *args, **kwargs):
@@ -603,10 +779,10 @@ if __name__ == "__main__":
                 '-qh',
                 '-p'
             ],
-            'SecondChapter': [
-                '-qh',
-                '-p'
-            ],
+            # 'SecondChapter': [
+            #     '-qh',
+            #     '-p'
+            # ],
             # 'Bibliography': [
             #     '-qh',
             #     # '-p'
@@ -625,4 +801,4 @@ if __name__ == "__main__":
     )
 
     runner.run_scenes()
-    runner.concatenate_videos(run_output=True)
+    # runner.concatenate_videos(run_output=True)
