@@ -30,20 +30,20 @@ class England(MovingCameraScene):
 
         timeline = presets.TimeLine(**configs.timeline_config)
         timeline.preload_for_scene(
-            target_time=last_time_in_previous_scene,
+            target_time='1066',
             scene=self # pass the scene as parameter
         )
 
-        self.add(timeline)
+        # self.add(timeline)
 
         frame_height = self.camera.frame_height
         
         text = 'Rey Guillermo I encarga censo en el Domesday Book, documento acerca de la propiedad, extensión y valor de las tierras.'
-        paragraph = presets.text_to_paragraph(text, line_length=20)
+        paragraph = presets.text_to_paragraph(text, line_length=20, color=BEIGE)
 
-        paragraph = Paragraph('\n'.join(paragraph))
+        # paragraph = Paragraph('\n'.join(paragraph), color=BEIGE)
         paragraph.height = frame_height/3
-        paragraph.align_on_border(LEFT, buff=2)
+        paragraph.align_on_border(LEFT, buff=3)
 
         self.play(Write(paragraph))
         self.wait(2)

@@ -572,7 +572,7 @@ def create_interference_pattern(amount=5, width=0.5, height=1.5):
 
     return pattern
 
-def text_to_paragraph(text, line_length=40):
+def text_to_lines(text, line_length=40):
 
     text = text.strip()
     text_length = len(text)
@@ -614,7 +614,13 @@ def text_to_paragraph(text, line_length=40):
     processed_lines = [line.strip() for line in processed_lines]
 
     return processed_lines
+
+def text_to_paragraph(text, line_length=40, **kwargs):
+
+    lines = text_to_lines(text, line_length=line_length)
     
+    return Paragraph('\n'.join(lines), **kwargs)
+
 
 def image_path(name: str, folder_path=['assets', 'images']) -> str:
     path = os.path.join(*folder_path, name)
