@@ -3,3 +3,5 @@ media
 mfput.log
 .vscode/
 out.mp4
+example.py
+words.py

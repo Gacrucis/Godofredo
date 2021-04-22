@@ -8,6 +8,8 @@ from manim import *  # type: ignore
 import video_utils
 import presets
 
+import configs
+
 
 UIS_GREEN = "#67b93e"
 PURPLE = '#673c4f'
@@ -20,62 +22,56 @@ BEIGE = '#7c795d'
 PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
 
 
-class Intro(MovingCameraScene):
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.uis_logo = SVGMobject(
-    #         file_name='.\\assets\\svg\\UIS.svg').scale(1.2)
-
-    #     self.uis_logo[1].set_fill(color=WHITE, opacity=.9)
-    #     self.uis_logo[5:].set_fill(color=WHITE, opacity=.9)
-
-    #     self.names_config = {
-    #         "stroke_width": 1,
-    #         "background_stroke_width": 5,
-    #         "background_stroke_color": BLACK,
-    #         "sheen_factor": .2,
-    #         "sheen_direction": UR,
-    #     }
+class England(MovingCameraScene):
 
     def construct(self):
-        title = Tex('HDLE')
+
+        ref_point = presets.get_coords(-6, 3)
+
+        timeline = presets.TimeLine(**configs.timeline_config)
+        timeline.preload_for_scene(
+            target_time=last_time_in_previous_scene,
+            scene=self # pass the scene as parameter
+        )
+
+        self.add(timeline)
+
+        frame_height = self.camera.frame_height
+        
+        text = 'Rey Guillermo I encarga censo en el Domesday Book, documento acerca de la propiedad, extensión y valor de las tierras.'
+        paragraph = presets.text_to_paragraph(text, line_length=20)
+
+        paragraph = Paragraph('\n'.join(paragraph))
+        paragraph.height = frame_height/3
+        paragraph.align_on_border(LEFT, buff=2)
+
+        self.play(Write(paragraph))
+        self.wait(2)
 
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            # 'Intro': [
-            #     '-ql',
-            #     '-p'
-            # ],
+            'England': [
+                '-qh',
+                '-p'
+            ],
             # 'FirstChapterIntro': [
             #     '-sql',
             #     '-p'
             # ],
-            'FirstChapter': [
-                '-qh',
-                '-p'
-            ],
-            'SecondChapter': [
-                '-qh',
-                '-p'
-            ],
-            # 'Bibliography': [
+            # 'FirstChapter': [
             #     '-qh',
-            #     # '-p'
-            # ],
-            # 'Outro': [
-            #     '-ql',
             #     '-p'
             # ],
-            # 'Test': [
-            #     '-sql',
+            # 'SecondChapter': [
+            #     '-qh',
             #     '-p'
-            # ]
+            # ],
+
         },
-        file_path=r'main.py',  # it's relative to cwd
+        file_path=r'EdScenes.py',  # it's relative to cwd
         project_name='Godofredo'
     )
 
     runner.run_scenes()
-    runner.concatenate_videos(run_output=True)
+    # runner.concatenate_videos(run_output=True)

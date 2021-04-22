@@ -1,3 +1,4 @@
+import os
 import math
 from itertools import cycle
 from manim import *
@@ -568,3 +569,56 @@ def create_interference_pattern(amount=5, width=0.5, height=1.5):
         pattern.add(light)
 
     return pattern
+
+def text_to_paragraph(text, line_length=40):
+
+    text = text.strip()
+    text_length = len(text)
+    line_amount = text_length // line_length
+    text_lines = []
+
+    text_words = text.split(' ')
+    current_word_index = 0
+    min_length = 9999
+    min_line = 0
+
+    for i in range(line_amount):
+        current_line = []
+        current_length = 0
+
+        while current_length < line_length and current_word_index < len(text_words):
+            current_word = text_words[current_word_index]
+
+            current_line.append(current_word)
+            current_length += len(current_word) + 1
+            current_word_index += 1
+        
+        text_lines.append(current_line)
+
+        if current_length < min_length:
+            min_length = current_length
+            min_line = i
+    
+    if current_word_index < (len(text_words)-1):
+        
+        for line in text_lines[min_line:-1]:
+            line.append(text_lines[current_word_index+1].pop(0))
+
+            current_word_index += 1
+        
+        text_lines[-1].append(text_words[-1])
+
+    processed_lines = [' '.join(line) for line in text_lines]
+    processed_lines = [line.strip() for line in processed_lines]
+
+    return processed_lines
+    
+
+def image_path(name: str, folder_path=['assets', 'images']) -> str:
+    path = os.path.join(*folder_path, name)
+    if not os.path.exists(path):
+        raise Exception(f"{path} does not exist.")
+    return path
+
+def get_coords(x: float, y: float) -> "ndarray":
+    return RIGHT * x + UP * y
