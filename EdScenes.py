@@ -186,6 +186,221 @@ class Colombia1800(GraphScene):
             'Se creó la primer oficina de estadística nacional y se publicó el primer anuario'
         ]
 
+        joined_text = '\n'.join(text_points)
+
+        # bullet_list = VGroup()
+        # for line in text_points:
+
+        #     bullet_text = presets.text_to_paragraph(line, line_length=20)
+        #     bullet_dot = MathTex(r'\cdot').scale(2)
+        #     bullet_dot.next_to(bullet_text, UL)
+        #     bullet_dot.align_to(point(bullet_text.get_center()),)
+
+        #     bullet = VGroup(bullet_dot, bullet_text)
+
+        #     bullet_list.add(bullet)
+
+        # bullet_list.arrange(DOWN, buff=0.3)
+
+        paragraph = presets.PTex(
+            text=joined_text,
+            alignment='right',
+            line_length=35,
+            interline_space=0.2
+        )
+
+        paragraph.width = frame_width/2.2
+        paragraph.align_on_border(LEFT, buff=2)
+
+
+
+        self.play(Create(paragraph))
+
+        # self.play(Write(paragraph), DrawBorderThenFill(coins_svg))
+        # self.play(DrawBorderThenFill(pickaxe_svg), run_time=2)
+        # # self.play(Write(paragraph), Create(graph))
+        self.wait(2)
+
+        # self.play(
+        #     FadeOutAndShift(paragraph, UP * 2),
+        #     FadeOutAndShift(coins_svg, UP * 2),
+        #     FadeOutAndShift(pickaxe_svg, UP * 2),
+        # )
+
+class XXCentury(GraphScene):
+
+    def construct(self):
+
+        frame_height = self.camera.frame_height
+        frame_width = self.camera.frame_width
+        
+        timeline = presets.TimeLine(**configs.timeline_config)
+        timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
+        timeline.preload_for_scene(
+            target_time='1800',
+            scene=self # pass the scene as parameter
+        )
+
+        # self.play(timeline.next_time_scroll())
+
+        text_points = [
+            'Se hizo obligatorio dar un reporte a la hacienda pública y se estableció la metodología para realizar censos.',
+            'Se creó la primer oficina de estadística nacional y se publicó el primer anuario'
+        ]
+
+        bullet_list = VGroup()
+        for line in text_points:
+
+            bullet_text = presets.text_to_paragraph(line, line_length=20)
+            bullet_dot = MathTex(r'\cdot').scale(2)
+            bullet_dot.next_to(bullet_text, UL)
+            bullet_dot.align_to(point(bullet_text.get_center()),)
+
+            bullet = VGroup(bullet_dot, bullet_text)
+
+            bullet_list.add(bullet)
+
+        bullet_list.arrange(DOWN, buff=0.3)
+        
+
+
+
+        self.play(Create(bullet_list))
+
+        # self.play(Write(paragraph), DrawBorderThenFill(coins_svg))
+        # self.play(DrawBorderThenFill(pickaxe_svg), run_time=2)
+        # # self.play(Write(paragraph), Create(graph))
+        self.wait(2)
+
+        # self.play(
+        #     FadeOutAndShift(paragraph, UP * 2),
+        #     FadeOutAndShift(coins_svg, UP * 2),
+        #     FadeOutAndShift(pickaxe_svg, UP * 2),
+        # )
+
+class Colombia1900(GraphScene):
+
+    def construct(self):
+
+        frame_height = self.camera.frame_height
+        frame_width = self.camera.frame_width
+        
+        timeline = presets.TimeLine(**configs.timeline_config)
+        timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
+        timeline.preload_for_scene(
+            target_time='Siglo XX',
+            scene=self # pass the scene as parameter
+        )
+
+        # self.play(timeline.next_time_scroll())
+
+        text_points = [
+            'Se hizo obligatorio dar un reporte a la hacienda pública y se estableció la metodología para realizar censos.',
+            'Se creó la primer oficina de estadística nacional y se publicó el primer anuario'
+        ]
+
+        bullet_list = VGroup()
+        for line in text_points:
+
+            bullet_text = presets.text_to_paragraph(line, line_length=20)
+            bullet_dot = MathTex(r'\cdot').scale(2)
+            bullet_dot.next_to(bullet_text, UL)
+            bullet_dot.align_to(point(bullet_text.get_center()),)
+
+            bullet = VGroup(bullet_dot, bullet_text)
+
+            bullet_list.add(bullet)
+
+        bullet_list.arrange(DOWN, buff=0.3)
+        
+
+
+
+        self.play(Create(bullet_list))
+
+        # self.play(Write(paragraph), DrawBorderThenFill(coins_svg))
+        # self.play(DrawBorderThenFill(pickaxe_svg), run_time=2)
+        # # self.play(Write(paragraph), Create(graph))
+        self.wait(2)
+
+        # self.play(
+        #     FadeOutAndShift(paragraph, UP * 2),
+        #     FadeOutAndShift(coins_svg, UP * 2),
+        #     FadeOutAndShift(pickaxe_svg, UP * 2),
+        # )
+
+class Colombia2000(GraphScene):
+
+    def construct(self):
+
+        frame_height = self.camera.frame_height
+        frame_width = self.camera.frame_width
+        
+        timeline = presets.TimeLine(**configs.timeline_config)
+        timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
+        timeline.preload_for_scene(
+            target_time='Siglo XX',
+            scene=self # pass the scene as parameter
+        )
+
+        self.play(timeline.next_time_scroll())
+
+        text_points = [
+            'Se hizo obligatorio dar un reporte a la hacienda pública y se estableció la metodología para realizar censos.',
+            'Se creó la primer oficina de estadística nacional y se publicó el primer anuario'
+        ]
+
+        bullet_list = VGroup()
+        for line in text_points:
+
+            bullet_text = presets.text_to_paragraph(line, line_length=20)
+            bullet_dot = MathTex(r'\cdot').scale(2)
+            bullet_dot.next_to(bullet_text, UL)
+            bullet_dot.align_to(point(bullet_text.get_center()),)
+
+            bullet = VGroup(bullet_dot, bullet_text)
+
+            bullet_list.add(bullet)
+
+        bullet_list.arrange(DOWN, buff=0.3)
+        
+
+
+
+        self.play(Create(bullet_list))
+
+        # self.play(Write(paragraph), DrawBorderThenFill(coins_svg))
+        # self.play(DrawBorderThenFill(pickaxe_svg), run_time=2)
+        # # self.play(Write(paragraph), Create(graph))
+        self.wait(2)
+
+        # self.play(
+        #     FadeOutAndShift(paragraph, UP * 2),
+        #     FadeOutAndShift(coins_svg, UP * 2),
+        #     FadeOutAndShift(pickaxe_svg, UP * 2),
+        # )
+
+class Colombia2020(GraphScene):
+
+    def construct(self):
+
+        frame_height = self.camera.frame_height
+        frame_width = self.camera.frame_width
+        
+        timeline = presets.TimeLine(**configs.timeline_config)
+        timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
+        timeline.preload_for_scene(
+            target_time='2000',
+            scene=self # pass the scene as parameter
+        )
+
+        self.play(timeline.next_time_scroll())
+
+        text_points = [
+            'Se hizo obligatorio dar un reporte a la hacienda pública y se estableció la metodología para realizar censos.',
+            'Se creó la primer oficina de estadística nacional y se publicó el primer anuario'
+        ]
+
         bullet_list = VGroup()
         for line in text_points:
 
@@ -235,6 +450,22 @@ if __name__ == "__main__":
                 '-qh',
                 '-p'
             ],
+            # 'XXCentury': [
+            #     '-qh',
+            #     '-p'
+            # ],
+            # 'Colombia1900': [
+            #     '-qh',
+            #     '-p'
+            # ],
+            # 'Colombia2000': [
+            #     '-qh',
+            #     '-p'
+            # ],
+            # 'Colombia2020': [
+            #     '-qh',
+            #     '-p'
+            # ],
 
         },
         file_path=r'EdScenes.py',  # it's relative to cwd
