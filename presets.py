@@ -381,7 +381,6 @@ class TimeLine(VGroup):
             scene.add(self.arrow)
 
 
-
 class PTex(Tex):
     def __init__(
         self, 
