@@ -396,7 +396,10 @@ class PTex(Tex):
             line + "\\\\"
             for line in self.text_to_lines(text, line_length=line_length)
         ]
-        super().__init__(*line_separated, **kwargs)
+        super().__init__(
+            *line_separated,
+            tex_environment=tex_environment 
+            **kwargs)
 
         self.arrange(
             **{
