@@ -407,7 +407,7 @@ class PTex(Tex):
             }
         )
     
-    def text_to_lines(self, text: str, line_length: int = 40) -> list:git 
+    def text_to_lines(self, text: str, line_length: int = 40) -> list:
         text = text.strip()
         text_length = len(text)
         line_amount = text_length // line_length
