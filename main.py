@@ -5,6 +5,8 @@ import itertools as it
 from colour import Color
 from manim import *  # type: ignore
 
+from manim.mobject.svg.text_mobject import remove_invisible_chars
+
 import video_utils
 import presets
 
@@ -1369,21 +1371,17 @@ class Outro(Scene):
         self.wait(2)
         self.play(FadeOut(banner), FadeOut(motor))
 
-class Test(FirstChapter):
-    def __init__(self, start_time="Epoca antigua", *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.timeline = presets.TimeLine(**self.timeline_config)
-        self.timeline.next_to(self.points["reference"], DOWN, buff=0)
-        print(start_time)
-        self.timeline.preload_for_scene(
-            target_time="1066",
-            scene=self
-        )
-        self.paragraph_config["line_length"] = 40
-
+class Test(Scene):
     def construct(self):
-        # self.wait()
-        pass
+        paragraph = presets.PTex(
+            "Esto es un texto de prueba to see whether this works or not. It seems is working as I expect.",
+            alignment="right",
+            interline_space=0.2,
+            line_length=25
+        )
+        txt = ['Esto es un texto de prueba to see whether\\\\', 'this works or not.\\\\']
+        self.add(paragraph)
+        self.wait()
 
 def image_path(name: str) -> str:
     path = os.path.join("assets", "images", name)
@@ -1433,10 +1431,10 @@ if __name__ == "__main__":
             #     '-ql',
             #     '-p'
             # ],
-            # 'Test': [
-            #     '-sql',
-            #     '-p'
-            # ]
+            'Test': [
+                '-sql',
+                '-p'
+            ]
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
