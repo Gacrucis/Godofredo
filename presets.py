@@ -392,19 +392,23 @@ class PTex(Tex):
         tex_environment: str = None, 
         **kwargs
     ):
+        """
+            alignment: can take 'center', 'left' or 'right', default is 'left'
+            
+        """
         line_separated = [
-            line + "\\\\"
+            line + r"\\"
             for line in self.text_to_lines(text, line_length=line_length)
         ]
         super().__init__(
             *line_separated,
-            tex_environment=tex_environment 
+            tex_environment=tex_environment,
             **kwargs)
 
         self.arrange(
             **{
                 "direction": DOWN,
-                "aligned_edge": LEFT if alignment == "left" else RIGHT,
+                "aligned_edge": RIGHT if alignment == "right" else LEFT,
                 "center": True if alignment == "center" else False,
                 "buff": interline_space
             }

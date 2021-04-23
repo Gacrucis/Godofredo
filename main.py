@@ -205,7 +205,8 @@ class FirstChapter(MovingCameraScene):
         }
         self.paragraph_config = {
             **self.text_config,
-            "line_spacing": 0.8,
+            "line_length": 35,
+            "interline_scape": 0.3,
 
         }
         self.title_config = {
@@ -250,7 +251,8 @@ class FirstChapter(MovingCameraScene):
         self.txt_up_shift = UP * 0.5
         self.scales = {
             "title": 0.5,
-            "source": 0.4
+            "source": 0.4,
+            "text": 0.6
         }
         self.buffs = {
             "title": 0.3,
@@ -259,7 +261,7 @@ class FirstChapter(MovingCameraScene):
             "left border": 1.5
         }
         self.shifts = {
-            "text": UP * 0.5
+            "text": UP * 0.3
         }
 
     def construct(self):
@@ -451,9 +453,8 @@ class AncientTime(FirstChapter):
             scene=self
         )
 
-        self.paragraph_config["line_length"] = 35
-
     def construct(self):
+        self.paragraph_config["line_length"] = 32
 
         # images and text
         
@@ -463,9 +464,9 @@ class AncientTime(FirstChapter):
                 "Registro de ganado",
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Se encontraron registros de rocas que habian sido empleadas para registrar la cantidad de ganado, alimento o personas en aldeas",
-                # alignment="left",
+                alignment="left",
                 **self.paragraph_config
             ),
             "src": Tex(
@@ -479,9 +480,9 @@ class AncientTime(FirstChapter):
                 "Antiguo Egipto",
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Esta organización permite la construcción de piramides en Egipto y la elaboración de censos de población",
-                # alignment="right",
+                alignment="right",
                 **self.paragraph_config
             ),
             "src": Tex(
@@ -490,10 +491,7 @@ class AncientTime(FirstChapter):
             )
         }
 
-        src_scale=0.4
-        vertical_shift = UP * 0.5
-
-        farming["image"].scale(1.2).move_to(self.points["image start"])
+        farming["image"].scale(0.99).move_to(self.points["image start"])
         egyptians["image"].scale(0.85).align_on_border(RIGHT, buff=1)
         
         farming["title"].scale(self.scales["title"]).next_to(farming["image"], UP, buff=self.buffs["title"])
@@ -501,8 +499,8 @@ class AncientTime(FirstChapter):
 
 
 
-        farming["text"].scale(0.45).next_to(farming["image"], RIGHT, buff=0.3).shift(self.shifts["text"])
-        egyptians["text"].scale(0.45).next_to(egyptians["image"], LEFT, buff=0.3).shift(self.shifts["text"])
+        farming["text"].scale(self.scales["text"]).next_to(farming["image"], RIGHT, buff=0.3).shift(self.shifts["text"])
+        egyptians["text"].scale(self.scales["text"]).next_to(egyptians["image"], LEFT, buff=0.3).shift(self.shifts["text"])
 
         farming["src"].scale(self.scales["source"]).next_to(farming["image"], DOWN, buff=0.1)
         egyptians["src"].scale(self.scales["source"]).next_to(egyptians["image"], DOWN, buff=0.1)
@@ -511,7 +509,7 @@ class AncientTime(FirstChapter):
         #     # farming["image"], farming["text"], farming["src"],
         #     egyptians["image"], egyptians["text"], egyptians["src"],
         # )
-
+        
         self.play(
             FadeIn(farming["image"]),
             AnimationGroup(
@@ -597,7 +595,7 @@ class BC3000(AncientTime):
                     "Pirámides de Egipto",
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Esta organización permite la construcción de piramides en Egipto y la elaboración de censos de población",
                     **self.paragraph_config
                 ),
@@ -629,7 +627,7 @@ class BC3000(AncientTime):
                 "Babilonios", 
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Tablillas de arcilla",
                 **self.paragraph_config
             ),
@@ -645,7 +643,7 @@ class BC3000(AncientTime):
                 "Egipcios", 
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "La organización del pueblo condujo a la construcción de las piramides",
                 **self.paragraph_config
             ),
@@ -661,7 +659,7 @@ class BC3000(AncientTime):
                 "Chinos", 
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Estadística agricola, comercial e industrial",
                 alignment="left",
                 **self.paragraph_config
@@ -762,7 +760,7 @@ class Biblia(AncientTime):
                     "Babilonios",
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Tablillas de arcilla",
                     **self.paragraph_config
                 ),
@@ -774,7 +772,7 @@ class Biblia(AncientTime):
                     "Egipcios",
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "La organización del pueblo condujo a la construcción de las piramides",
                     **self.paragraph_config
                 ),
@@ -786,7 +784,7 @@ class Biblia(AncientTime):
                     "Chinos",
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Tablillas de arcilla",
                     **self.paragraph_config
                 ),
@@ -841,7 +839,7 @@ class Biblia(AncientTime):
                 "Pentateuco", 
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Se observa en el pentateuco (libro de números) un censo realizado por moisés en su salida de Egipto",
                 **self.paragraph_config
             ),
@@ -888,7 +886,7 @@ class BC762(AncientTime):
                     "Pentateuco", 
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Se observa en el pentateuco (libro de números) un censo realizado por moisés en su salida de Egipto",
                     **self.paragraph_config
                 ),
@@ -923,7 +921,7 @@ class BC762(AncientTime):
                 "Biblioteca de Ashurbanipal",
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Sargon II Fundo una biblioteca en nínive donde recopila:",
                 **self.paragraph_config
             ),
@@ -1005,7 +1003,7 @@ class BC594(AncientTime):
                     "Biblioteca de Ashurbanipal", 
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Sargon II Fundo una biblioteca en nínive donde recopila:",
                     **self.paragraph_config
                 ),
@@ -1049,7 +1047,7 @@ class BC594(AncientTime):
                 "Estádistica en Grecia",
                 **self.title_config
             ),
-            "text": presets.text_to_paragraph(
+            "text": presets.PTex(
                 "Realizaron estadística sobre distribución de terreno y servicio militar, también se registraron censos para el cálculo de impuestos y derechos de voto",
                 **self.paragraph_config
             ),
@@ -1101,7 +1099,7 @@ class RomanEmpire(AncientTime):
                     "Estádistica en Grecia", 
                     **self.title_config
                 ),
-                presets.text_to_paragraph(
+                presets.PTex(
                     "Realizaron estadística sobre distribución de terreno y servicio militar, también se registraron censos para el cálculo de impuestos y derechos de voto",
                     **mod_paragraph_config
                 ),
@@ -1399,10 +1397,10 @@ if __name__ == "__main__":
             #     '-sql',
             #     '-p'
             # ],
-            # 'AncientTime': [
-            #     '-sql',
-            #     '-p'
-            # ],
+            'AncientTime': [
+                '-sql',
+                '-p'
+            ],
             # 'BC3000': [
             #     '-sql',
             #     '-p'
@@ -1431,10 +1429,10 @@ if __name__ == "__main__":
             #     '-ql',
             #     '-p'
             # ],
-            'Test': [
-                '-sql',
-                '-p'
-            ]
+            # 'Test': [
+            #     '-sql',
+            #     '-p'
+            # ]
         },
         file_path=r'main.py',  # it's relative to cwd
         project_name='Godofredo'
