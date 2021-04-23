@@ -522,8 +522,14 @@ def create_bullet_list(text_list, start_point=ORIGIN, text_colors=None, bullet_s
     bullet_colors = cycle(bullet_colors)
 
     for i, text in enumerate(text_list):
-        text_bullet = create_bullet_point(text, text_color=next(
-            text_colors), bullet_scale=bullet_scale, bullet_color=next(bullet_colors), bullet_buff=bullet_buff)
+        text_bullet = create_bullet_point(
+            text, 
+            text_color=next(
+            text_colors), 
+            bullet_scale=bullet_scale, 
+            bullet_color=next(bullet_colors), 
+            bullet_buff=bullet_buff
+        )
         text_bullet.scale(text_scale)
         text_bullet[0].move_to(start_point)
         text_bullet[0].align_to(start_point, UP)
@@ -689,8 +695,6 @@ def text_to_paragraph(text, line_length=40, **kwargs):
 
     lines = text_to_lines(text, line_length=line_length)
 
-    print(lines)
-    
     return Paragraph(*lines, **kwargs)
 
 def image_path(name: str, folder_path=['assets', 'images']) -> str:
