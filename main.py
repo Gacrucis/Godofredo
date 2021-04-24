@@ -279,7 +279,7 @@ class FirstChapter(MovingCameraScene):
 
         timeline = presets.TimeLine(**self.timeline_config)
         timeline.next_to(self.points["reference"], DOWN, buff=0)
-        timeline.times[0].shift(LEFT*0.02)
+        timeline.times[0].shift(RIGHT*0.08)
 
         header = Tex(
             "Historia de la ",
@@ -816,10 +816,6 @@ class Biblia(AncientTime):
                 **self.title_config
             )
         }
-        print(pentateuco["text"].get_center())
-
-        print(self.shifts["text"])
-
         pentateuco["text"].scale(self.scales["text"]).next_to(
             self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
         pentateuco["image"].scale(0.8).next_to(
@@ -828,8 +824,6 @@ class Biblia(AncientTime):
             pentateuco["title"],
             pentateuco["image"]
         )
-        print(pentateuco["text"].get_center())
-
         # animations
         # self.add(
         #     pentateuco["image"],
@@ -886,13 +880,11 @@ class BC762(AncientTime):
             self.previous["title"],
             self.previous["image"]
         )
-        print(self.previous["text"].get_center())
 
         self.add(*self.previous.values())
 
     def construct(self):
-        self.wait()
-        return
+
         # images and text
         self.paragraph_config["line_length"] = 32
 
@@ -1179,7 +1171,8 @@ class Bibliography(Scene):
         self.ref_point = UP * 3 + LEFT * 3.5
         self.text_config = {
             "stroke_width": 1,
-            "alignment": "left"
+            "alignment": "left",
+            "line_length": 50
         }
         self.dot_config = {
             "radius": .07,
@@ -1193,12 +1186,18 @@ class Bibliography(Scene):
             presets.PTex(
                 r"S. Hernandez G. (2005, Mayo-Agosto). Historia de la estadística. [Online]. Available: https://www.uv.mx/cienciahombre/revistae/vol18num2/articulos/historia/",
                 **self.text_config),
-            Tex(r"Franco García, A. (2010). Análisis de Fourier. Sc.ehu. ",
-                r"http://www.sc.ehu.es/sbweb/fisica/ondas/fourier/Fourier.html", **self.text_config),
-            Tex(r"What makes an object into a musical instrument? (2019, 4 diciembre). ",
-                r"https://plus.maths.org/content/what-makes-object-musical", **self.text_config),
-            Tex(r"Fourier Analysis and Synthesis. (2017). hyperphysics. ",
-                r"http://hyperphysics.phy-astr.gsu.edu/hbasees/Audio/Fourier.html", **self.text_config),
+            presets.PTex(
+                r"Y. Díaz. (2013,  Noviembre). La estadística en Colombia, una evolución fundamental para la toma de decisiones. [Online]. Available: https: // www.dane.gov.co/files/lineadetiempodane/index.html",
+                **self.text_config
+            ),
+            presets.PTex
+            (r"M.H. Badii, J. Castillo, J. Landeros \& K. Cortez. (2007, Enero-Junio). Papel de la estadística en la investigación científica. [Online]. Available: http://revistainnovaciones.uanl.mx/index.php/revin/article/view/180",
+             **self.text_config
+             ),
+            presets.PTex(
+                r"J. F. López. (2019, Julio 22). Historia de la estadística. [Online]. Available: https://economipedia.com/definiciones/historia-de-la-estadistica.html",
+                **self.text_config
+            ),
         ).scale(1.8)
 
         for mob in srcs:
@@ -1455,7 +1454,7 @@ if __name__ == "__main__":
                 "--flush_cache"
             ],
             # 'Bibliography': [
-            #     '-qh',
+            #     '-sql',
             #     '-p'
             # ],
             # 'Outro': [
