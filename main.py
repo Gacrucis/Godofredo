@@ -18,6 +18,7 @@ VIOLET = '#726e97'
 DARK_SKY_BLUE = '#7698b3'
 SKY_BLUE = '#83b5d1'
 BEIGE = '#7c795d'
+BEIGE_B = '#a9a689'
 
 PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
 
@@ -29,14 +30,15 @@ TIMELINE_TIMES = [
     "594 A.C.",
     "Imperio Romano",
     "1066",
-    "Siglo XVI", # General y Colombia
-    "1800", # Colombia
-    "Siglo XX", # General y Colombia
-    "2000", # Colombia
-    "2020" # Colombia
+    "Siglo XVI",  # General y Colombia
+    "1800",  # Colombia
+    "Siglo XX",  # General y Colombia
+    "2000",  # Colombia
+    "2020"  # Colombia
 ]
 
 TIMELINE_LENGTH = 20
+
 
 class Intro(MovingCameraScene):
 
@@ -171,6 +173,7 @@ class Intro(MovingCameraScene):
 
         # self.wait()
 
+
 class FirstChapterIntro(MovingCameraScene):
 
     def construct(self):
@@ -188,6 +191,7 @@ class FirstChapterIntro(MovingCameraScene):
             self.play(animation)
 
         self.wait()
+
 
 class FirstChapter(MovingCameraScene):
     def __init__(self, *args, **kwargs):
@@ -224,7 +228,7 @@ class FirstChapter(MovingCameraScene):
         }
 
         self.timeline_config = {
-            "times" : TIMELINE_TIMES,
+            "times": TIMELINE_TIMES,
             "direction": DOWN,
             "length": TIMELINE_LENGTH,
             "arrow_scale": 1,
@@ -275,6 +279,7 @@ class FirstChapter(MovingCameraScene):
 
         timeline = presets.TimeLine(**self.timeline_config)
         timeline.next_to(self.points["reference"], DOWN, buff=0)
+        timeline.times[0].shift(LEFT*0.02)
 
         header = Tex(
             "Historia de la ",
@@ -284,24 +289,45 @@ class FirstChapter(MovingCameraScene):
 
         header.align_on_border(UP, buff=0.8)
 
-        equal = MathTex("=", **self.text_config)
-
         etimology = VGroup(
-            header[18:],
             Tex(
-                "Stat","istic","us",
+                "Statis", "t", "icus",
                 **self.text_config
-            ),
+            ).set_color(self.main_title_config["color"]),
             Tex(
                 "Status",
                 **self.text_config
-            ).set_color(RED)
+            ).set_color(DARK_SKY_BLUE),
+            Tex(
+                "icus",
+                **self.text_config
+            ).set_color(DARK_SKY_BLUE),
+            Tex(
+                "(", "estado", ")",
+                **self.text_config
+            ).scale(0.8),
+            Tex(
+                "(relativo a)",
+                **self.text_config
+            ).scale(0.8),
+            Tex(
+                '"Relativo al estado"',
+                **self.text_config,
+            ).set_color(BEIGE_B)
         )
 
-        to_highlight = VGroup(
-            etimology[1][0],
-            etimology[1][-1]
-        )
+        diagonal_buff = 0.5
+        down_buff = 0.5
+
+        etimology[0].shift(UP * 2)
+        etimology[1].next_to(etimology[0], DL, buff=diagonal_buff)
+        etimology[2].next_to(etimology[0], DR, buff=diagonal_buff)
+        etimology[3].next_to(etimology[1], DOWN, buff=down_buff)
+        etimology[4].next_to(etimology[2], DOWN, buff=down_buff)
+
+        brace = Brace(VGroup(etimology[3:5]), direction=DOWN)
+
+        etimology[-1].next_to(brace, DOWN, buff=down_buff)
 
         # images and text
 
@@ -311,10 +337,6 @@ class FirstChapter(MovingCameraScene):
                 "Manuscrito recuperado",
                 **self.text_config
             ),
-            "src": Tex(
-                "https://bit.ly/3dJRdQ5",
-                **self.source_config
-            )
         }
         emperor = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\2_emperador_chino.jpg')),
@@ -322,10 +344,6 @@ class FirstChapter(MovingCameraScene):
                 "Dinastia china",
                 **self.text_config
             ),
-            "src": Tex(
-                "https://bit.ly/3v7qBy8",
-                **self.source_config
-            )
         }
         players = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\3_jugadores_dados.jpg')),
@@ -333,26 +351,22 @@ class FirstChapter(MovingCameraScene):
                 "Nacimiento de las probabilidades",
                 **self.text_config
             ),
-            "src": Tex(
-                "https://bit.ly/2QkTLLi",
-                **self.source_config
-            )
         }
 
-        image_space_between=1.3
+        image_space_between = 1.3
 
         manuscript["image"].scale(1.2).align_on_border(LEFT, buff=1)
-        emperor["image"].scale(0.8).next_to(manuscript["image"], buff=image_space_between)
-        players["image"].scale(1.7).next_to(emperor["image"], buff=image_space_between)
+        emperor["image"].scale(0.8).next_to(
+            manuscript["image"], buff=image_space_between)
+        players["image"].scale(1.7).next_to(
+            emperor["image"], buff=image_space_between)
 
-        manuscript["title"].scale(0.5).next_to(manuscript["image"], UP, buff=self.buffs["title"])
-        emperor["title"].scale(0.6).next_to(emperor["image"], UP, buff=self.buffs["title"])
-        players["title"].scale(0.5).next_to(players["image"], UP, buff=self.buffs["title"])
-
-        manuscript["src"].scale(self.scales["source"]).next_to(manuscript["image"], DOWN, buff=0.1)
-        emperor["src"].scale(self.scales["source"]).next_to(emperor["image"], DOWN, buff=0.1)
-        players["src"].scale(self.scales["source"]).next_to(players["image"], DOWN, buff=0.1)
-
+        manuscript["title"].scale(self.scales["title"]).next_to(
+            manuscript["image"], UP, buff=self.buffs["title"])
+        emperor["title"].scale(self.scales["title"]).next_to(
+            emperor["image"], UP, buff=self.buffs["title"])
+        players["title"].scale(self.scales["title"]).next_to(
+            players["image"], UP, buff=self.buffs["title"])
 
         # animations
 
@@ -370,27 +384,17 @@ class FirstChapter(MovingCameraScene):
                 AnimationGroup(
                     Write(manuscript["title"]),
                     Write(emperor["title"]),
-                    Write(players["title"])
+                    Write(players["title"]),
+                    lag_ratio=0
                 ),
                 lag_ratio=1
             ),
-            AnimationGroup(
-                Wait(1.5),
-                FadeIn(
-                    VGroup(
-                    manuscript["src"],
-                    emperor["src"],
-                    players["src"]
-                    )
-                ),
-                lag_ratio=1
-            ),
-            run_time=3
+            run_time=5
         )
         self.wait()
 
         self.play(
-            header[1].animate.move_to(LEFT * 2).match_height(etimology[-1]),
+            ReplacementTransform(header[1], etimology[0]),
             FadeOut(header[0]),
             FadeOut(manuscript["image"]),
             FadeOut(emperor["image"]),
@@ -400,50 +404,46 @@ class FirstChapter(MovingCameraScene):
                     manuscript["title"],
                     emperor["title"],
                     players["title"],
-                    manuscript["src"],
-                    emperor["src"],
-                    players["src"]
                 )
             ),
             run_time=2
         )
-        header = header[1]
-        etimology[1].next_to(equal, RIGHT, buff=0.2)
 
         self.play(
-            header.animate.next_to(equal, LEFT, buff=0.2),
-            FadeInFrom(equal, direction=equal.get_center()),
-            Write(etimology[1]),
-            run_time=0.8
-        )
-
-        self.play(
-            etimology[1].animate.move_to(ORIGIN),
-            FadeOut(equal),
-            FadeOut(header),
+            ReplacementTransform(etimology[0][0].copy(), etimology[1]),
+            ReplacementTransform(etimology[0][-1].copy(), etimology[2]),
             run_time=2
         )
 
         self.play(
-            Indicate(to_highlight, scale_factor=1.1, color=RED)
-        )
-
-        self.play(
-            to_highlight[0].animate.next_to(ORIGIN, LEFT,buff=0.01),
-            to_highlight[1].animate.next_to(ORIGIN, RIGHT,buff=0).align_to(to_highlight[0], DOWN),
-            FadeOut(etimology[1][1]),
-            run_time=1
-        )
-
-        self.wait()
-
-        self.play(
-            FadeOut(to_highlight),
-            timeline.create(with_arrow=True, with_time=True),
+            ReplacementTransform(etimology[1].copy(), etimology[3]),
+            ReplacementTransform(etimology[2].copy(), etimology[4]),
             run_time=2
         )
 
+        self.play(
+            GrowFromCenter(brace),
+            AnimationGroup(
+                Wait(0.5),
+                Write(etimology[-1]),
+                lag_ratio=1
+            ),
+            run_time=3
+        )
+
+        self.play(
+            FadeOut(etimology),
+            FadeOut(brace),
+            AnimationGroup(
+                Wait(0.5),
+                timeline.create(with_arrow=True, with_time=True),
+                lag_ratio=1
+            ),
+            run_time=4
+        )
+
         self.wait()
+
 
 class AncientTime(FirstChapter):
     def __init__(self, start_time="Epoca antigua", *args, **kwargs):
@@ -459,10 +459,11 @@ class AncientTime(FirstChapter):
         self.cur_time = self.timeline.get_current_time()
 
     def construct(self):
+        return
         self.paragraph_config["line_length"] = 28
 
         # images and text
-        
+
         farming = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\4_farming.jfif')),
             "title": Tex(
@@ -474,10 +475,6 @@ class AncientTime(FirstChapter):
                 alignment="right",
                 **self.paragraph_config
             ),
-            "src": Tex(
-                "https://bit.ly/3dJRdQ5",
-                **self.source_config
-            )
         }
         egyptians = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\5_egyptians.jfif')),
@@ -490,23 +487,22 @@ class AncientTime(FirstChapter):
                 alignment="left",
                 **self.paragraph_config
             ),
-            "src": Tex(
-                "https://bit.ly/3v7qBy8",
-                **self.source_config
-            )
         }
 
-        farming["text"].scale(self.scales["text"]).next_to(self.cur_time,RIGHT).align_on_border(RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
-        egyptians["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+        farming["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT).align_on_border(
+            RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
+        egyptians["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
 
-        farming["image"].scale(0.99).next_to(farming["text"], LEFT, buff=self.buffs["image"])
-        egyptians["image"].scale(0.85).next_to(egyptians["text"], RIGHT, buff=self.buffs["image"])
-        
-        farming["title"].scale(self.scales["title"]).next_to(farming["image"], UP, buff=self.buffs["title"])
-        egyptians["title"].scale(self.scales["title"]).next_to(egyptians["image"], UP, buff=self.buffs["title"])
+        farming["image"].scale(0.99).next_to(
+            farming["text"], LEFT, buff=self.buffs["image"])
+        egyptians["image"].scale(0.85).next_to(
+            egyptians["text"], RIGHT, buff=self.buffs["image"])
 
-        farming["src"].scale(self.scales["source"]).next_to(farming["image"], DOWN, buff=0.1)
-        egyptians["src"].scale(self.scales["source"]).next_to(egyptians["image"], DOWN, buff=0.1)
+        farming["title"].scale(self.scales["title"]).next_to(
+            farming["image"], UP, buff=self.buffs["title"])
+        egyptians["title"].scale(self.scales["title"]).next_to(
+            egyptians["image"], UP, buff=self.buffs["title"])
 
         # self.add(
         #     farming["image"], farming["text"], farming["src"], farming["title"],
@@ -516,21 +512,16 @@ class AncientTime(FirstChapter):
         self.play(
             FadeIn(farming["image"]),
             AnimationGroup(
-                Wait(0.2),
+                Wait(0.5),
                 DrawBorderThenFill(farming["title"]),
                 lag_ratio=1
             ),
             AnimationGroup(
-                Wait(0.3),
+                Wait(0.6),
                 Write(farming["text"]),
                 lag_ratio=1
             ),
-            AnimationGroup(
-                Wait(0.5),
-                FadeIn(farming["src"]),
-                lag_ratio=1
-            ),
-            run_time=2
+            run_time=4
         )
         self.wait()
 
@@ -540,7 +531,6 @@ class AncientTime(FirstChapter):
                 VGroup(
                     farming["text"],
                     farming["title"],
-                    farming["src"]
                 )
             ),
             AnimationGroup(
@@ -553,13 +543,11 @@ class AncientTime(FirstChapter):
                 Wait(1.5),
                 AnimationGroup(
                     FadeIn(egyptians["text"]),
-                    FadeIn(egyptians["src"])
                 ),
                 lag_ratio=1
             ),
             run_time=4
         )
-
 
         self.wait()
 
@@ -573,22 +561,17 @@ class AncientTime(FirstChapter):
             ),
             AnimationGroup(
                 Wait(1),
-                FadeInFrom(
-                    mob_dict["text"] if "text" in mob_dict else mob_dict["list"],
-                    self.points["out screen down"]
+                Write(
+                    mob_dict["text"] if "text" in mob_dict else mob_dict["list"]
                 ),
-                lag_ratio=1
-            ),
-            AnimationGroup(
-                Wait(1.5),
-                FadeIn(mob_dict["src"]),
                 lag_ratio=1
             )
         ]
 
-    def position_title_and_src(self, title, src, img):
-        title.scale(self.scales["title"]).next_to(img, UP, buff=self.buffs["title"])
-        src.scale(self.scales["source"]).next_to(img, DOWN, buff=self.buffs["source"])
+    def position_title(self, title, ref):
+        title.scale(self.scales["title"]).next_to(
+            ref, UP, buff=self.buffs["title"])
+
 
 class BC3000(AncientTime):
     def __init__(self, *args, **kwargs):
@@ -600,105 +583,93 @@ class BC3000(AncientTime):
         self.previous = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\5_egyptians.jfif')),
             "text": presets.PTex(
-                    "Esta organización permite la construcción de piramides en Egipto y la elaboración de censos de población",
-                    alignment="left",
-                    **self.paragraph_config
-                ),
-            "group": VGroup(
-                Tex(
-                    "Antiguo Egipto",
-                    **self.title_config
-                ),
-                Tex(
-                    "https://bit.ly/3v7qBy8",
-                    **self.source_config
-                )
+                "Esta organización permite la construcción de piramides en Egipto y la elaboración de censos de población",
+                alignment="left",
+                **self.paragraph_config
+            ),
+            "title": Tex(
+                "Antiguo Egipto",
+                **self.title_config
             )
         }
 
-        self.previous["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+        self.previous["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
 
-        self.previous["image"].scale(0.85).next_to(self.previous["text"], RIGHT, buff=self.buffs["image"])
-        self.previous["group"][0].scale(self.scales["title"]).next_to(self.previous["image"], UP, buff=self.buffs["title"])
-        self.previous["group"][1].scale(self.scales["source"]).next_to(self.previous["image"], DOWN, buff=self.buffs["source"])
-
+        self.previous["image"].scale(0.85).next_to(
+            self.previous["text"], RIGHT, buff=self.buffs["image"])
+        self.previous["title"].scale(self.scales["title"]).next_to(
+            self.previous["image"], UP, buff=self.buffs["title"])
 
         self.add(*self.previous.values())
 
     def construct(self):
         self.paragraph_config["line_length"] = 35
         # images and text
-        
+
         clay_splints = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\6_clay_splints.jpg')),
             "title": Tex(
-                "Babilonios", 
+                "Babilonios",
                 alignment="left",
                 **self.title_config
             ),
             "text": presets.PTex(
                 "Tablillas de arcilla",
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3dE4YQa", # update
-                **self.source_config
             )
         }
 
         pyramids = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\7_pyramids.jpg')),
             "title": Tex(
-                "Egipcios", 
+                "Egipcios",
                 **self.title_config
             ),
             "text": presets.PTex(
                 "La organización del pueblo condujo a la construcción de las piramides",
                 alignment="left",
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3v7qBy8",
-                **self.source_config
             )
         }
 
         chinese_agriculture = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\8_chinese_agriculture.jpg')),
             "title": Tex(
-                "Chinos", 
+                "Chinos",
                 **self.title_config
             ),
             "text": presets.PTex(
                 "Estadística agricola, comercial e industrial",
                 alignment="left",
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3auJLWE",
-                **self.source_config
             )
         }
 
-        img_spacing=1
-        img_scale=0.42
+        img_spacing = 1
+        img_scale = 0.42
 
         # position images
-        clay_splints["image"].scale(img_scale).next_to(self.timeline.get_arrow(), RIGHT, buff=3).shift(UP * 1.2)
-        pyramids["image"].match_width(clay_splints["image"]).next_to(clay_splints["image"], DOWN, buff=img_spacing).align_to(clay_splints["image"], LEFT)
-        chinese_agriculture["image"].match_width(clay_splints["image"]).next_to(pyramids["image"], DOWN, buff=img_spacing).align_to(pyramids["image"], LEFT)
+        clay_splints["image"].scale(img_scale).next_to(
+            self.timeline.get_arrow(), RIGHT, buff=3).shift(UP * 1.2)
+        pyramids["image"].match_width(clay_splints["image"]).next_to(
+            clay_splints["image"], DOWN, buff=img_spacing).align_to(clay_splints["image"], LEFT)
+        chinese_agriculture["image"].match_width(clay_splints["image"]).next_to(
+            pyramids["image"], DOWN, buff=img_spacing).align_to(pyramids["image"], LEFT)
 
-        clay_splints["text"].scale(self.scales["text"]).next_to(clay_splints["image"], RIGHT, buff=self.buffs["text"])
-        pyramids["text"].scale(self.scales["text"]).next_to(pyramids["image"], RIGHT, buff=self.buffs["text"])
-        chinese_agriculture["text"].scale(self.scales["text"]).next_to(chinese_agriculture["image"], RIGHT, buff=self.buffs["text"])
+        clay_splints["text"].scale(self.scales["text"]).next_to(
+            clay_splints["image"], RIGHT, buff=self.buffs["text"])
+        pyramids["text"].scale(self.scales["text"]).next_to(
+            pyramids["image"], RIGHT, buff=self.buffs["text"])
+        chinese_agriculture["text"].scale(self.scales["text"]).next_to(
+            chinese_agriculture["image"], RIGHT, buff=self.buffs["text"])
 
-        clay_splints["title"].scale(self.scales["title"]).next_to(clay_splints["image"], UP, buff=self.buffs["title"])
-        pyramids["title"].scale(self.scales["title"]).next_to(pyramids["image"], UP, buff=self.buffs["title"])
-        chinese_agriculture["title"].scale(self.scales["title"]).next_to(chinese_agriculture["image"], UP, buff=self.buffs["title"])
-
-        clay_splints["src"].scale(self.scales["source"]).next_to(clay_splints["image"], DOWN, buff=self.buffs["source"])
-        pyramids["src"].scale(self.scales["source"]).next_to(pyramids["image"], DOWN, buff=self.buffs["source"])
-        chinese_agriculture["src"].scale(self.scales["source"]).next_to(chinese_agriculture["image"], DOWN, buff=self.buffs["source"])
+        clay_splints["title"].scale(self.scales["title"]).next_to(
+            clay_splints["image"], UP, buff=self.buffs["title"])
+        pyramids["title"].scale(self.scales["title"]).next_to(
+            pyramids["image"], UP, buff=self.buffs["title"])
+        chinese_agriculture["title"].scale(self.scales["title"]).next_to(
+            chinese_agriculture["image"], UP, buff=self.buffs["title"])
 
         # self.add(
         #     clay_splints["image"], pyramids["image"], chinese_agriculture["image"],
@@ -710,9 +681,12 @@ class BC3000(AncientTime):
         self.play(
             self.timeline.next_time_scroll(),
             # fade out previous mobs
-            FadeOutAndShift(self.previous["image"], self.points["out screen up"]),
-            FadeOutAndShift(self.previous["text"], self.points["out screen up"]),
-            FadeOutAndShift(self.previous["group"], self.points["out screen up"]),
+            FadeOutAndShift(self.previous["image"],
+                            self.points["out screen up"]),
+            FadeOutAndShift(self.previous["text"],
+                            self.points["out screen up"]),
+            FadeOutAndShift(self.previous["title"],
+                            self.points["out screen up"]),
 
             AnimationGroup(
                 Wait(1),
@@ -739,19 +713,12 @@ class BC3000(AncientTime):
                     Write(chinese_agriculture["text"]),
                     lag_ratio=0
                 ),
-                # fade srcs
-                FadeIn(
-                    VGroup(
-                        clay_splints["src"],
-                        pyramids["src"],
-                        chinese_agriculture["src"]
-                    )
-                ),
                 lag_ratio=1
             ),
-            run_time=2
+            run_time=4
         )
         self.wait()
+
 
 class Biblia(AncientTime):
     def __init__(self, *args, **kwargs):
@@ -759,12 +726,16 @@ class Biblia(AncientTime):
 
         # image is set apart since can't be in a VGroup
         self.paragraph_config["line_length"] = 35
+        self.wait()
 
         self.previous = {
             "images": [
-                ImageMobject(filename_or_array=image_path('.\\history\\6_clay_splints.jpg')),
-                ImageMobject(filename_or_array=image_path('.\\history\\7_pyramids.jpg')),
-                ImageMobject(filename_or_array=image_path('.\\history\\8_chinese_agriculture.jpg')),
+                ImageMobject(filename_or_array=image_path(
+                    '.\\history\\6_clay_splints.jpg')),
+                ImageMobject(filename_or_array=image_path(
+                    '.\\history\\7_pyramids.jpg')),
+                ImageMobject(filename_or_array=image_path(
+                    '.\\history\\8_chinese_agriculture.jpg')),
             ],
             "group": VGroup(
                 Tex(
@@ -776,20 +747,12 @@ class Biblia(AncientTime):
                     **self.paragraph_config
                 ),
                 Tex(
-                    "https://bit.ly/3dE4YQa",
-                    **self.source_config
-                ),
-                Tex(
                     "Egipcios",
                     **self.title_config
                 ),
                 presets.PTex(
                     "La organización del pueblo condujo a la construcción de las piramides",
                     **self.paragraph_config
-                ),
-                Tex(
-                    "https://bit.ly/3v7qBy8",
-                    **self.source_config
                 ),
                 Tex(
                     "Chinos",
@@ -799,36 +762,38 @@ class Biblia(AncientTime):
                     "Estadística agricola, comercial e industrial",
                     **self.paragraph_config
                 ),
-                Tex(
-                    "https://bit.ly/3auJLWE",
-                    **self.source_config
-                ),
             )
         }
 
-        img_spacing=1
-        img_scale=0.42
+        img_spacing = 1
+        img_scale = 0.42
 
         # position images
-        self.previous["images"][0].scale(img_scale).next_to(self.timeline.get_arrow(), RIGHT, buff=3).shift(UP * 1.2)
+        self.previous["images"][0].scale(img_scale).next_to(
+            self.timeline.get_arrow(), RIGHT, buff=3).shift(UP * 1.2)
 
-        self.previous["images"][1].match_width(self.previous["images"][0]).next_to(self.previous["images"][0], DOWN, buff=img_spacing)
+        self.previous["images"][1].match_width(self.previous["images"][0]).next_to(
+            self.previous["images"][0], DOWN, buff=img_spacing)
         self.previous["images"][1].align_to(self.previous["images"][0], LEFT)
 
-        self.previous["images"][2].match_width(self.previous["images"][0]).next_to(self.previous["images"][1], DOWN, buff=img_spacing)
+        self.previous["images"][2].match_width(self.previous["images"][0]).next_to(
+            self.previous["images"][1], DOWN, buff=img_spacing)
         self.previous["images"][2].align_to(self.previous["images"][1], LEFT)
 
-        self.previous["group"][0].scale(self.scales["title"]).next_to(self.previous["images"][0], UP, buff=self.buffs["title"])
-        self.previous["group"][1].scale(self.scales["text"]).next_to(self.previous["images"][0], RIGHT, buff=self.buffs["text"])
-        self.previous["group"][2].scale(self.scales["source"]).next_to(self.previous["images"][0], DOWN, buff=self.buffs["source"])
+        self.previous["group"][0].scale(self.scales["title"]).next_to(
+            self.previous["images"][0], UP, buff=self.buffs["title"])
+        self.previous["group"][1].scale(self.scales["text"]).next_to(
+            self.previous["images"][0], RIGHT, buff=self.buffs["text"])
 
-        self.previous["group"][3].scale(self.scales["title"]).next_to(self.previous["images"][1], UP, buff=self.buffs["title"])
-        self.previous["group"][4].scale(self.scales["text"]).next_to(self.previous["images"][1], RIGHT, buff=self.buffs["text"])
-        self.previous["group"][5].scale(self.scales["source"]).next_to(self.previous["images"][1], DOWN, buff=self.buffs["source"])
+        self.previous["group"][2].scale(self.scales["title"]).next_to(
+            self.previous["images"][1], UP, buff=self.buffs["title"])
+        self.previous["group"][3].scale(self.scales["text"]).next_to(
+            self.previous["images"][1], RIGHT, buff=self.buffs["text"])
 
-        self.previous["group"][6].scale(self.scales["title"]).next_to(self.previous["images"][2], UP, buff=self.buffs["title"])
-        self.previous["group"][7].scale(self.scales["text"]).next_to(self.previous["images"][2], RIGHT, buff=self.buffs["text"])
-        self.previous["group"][8].scale(self.scales["source"]).next_to(self.previous["images"][2], DOWN, buff=self.buffs["source"])
+        self.previous["group"][4].scale(self.scales["title"]).next_to(
+            self.previous["images"][2], UP, buff=self.buffs["title"])
+        self.previous["group"][5].scale(self.scales["text"]).next_to(
+            self.previous["images"][2], RIGHT, buff=self.buffs["text"])
 
         self.add(
             *self.previous["images"],
@@ -841,29 +806,34 @@ class Biblia(AncientTime):
 
         pentateuco = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\9_pentateuco.png')),
-            "title": Tex(
-                "Pentateuco", 
-                **self.title_config
-            ),
             "text": presets.PTex(
                 "Se observa en el pentateuco (libro de números) un censo realizado por moisés en su salida de Egipto",
                 alignment="left",
                 **self.paragraph_config
             ),
-            "src": Tex(
-                "https://bit.ly/3nb4Ydq", # update
-                **self.source_config
+            "title": Tex(
+                "Pentateuco",
+                **self.title_config
             )
         }
-        pentateuco["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
-        pentateuco["image"].scale(0.8).next_to(pentateuco["text"], RIGHT, buff=self.buffs["image"])
-        pentateuco["title"].scale(self.scales["title"]).next_to(pentateuco["image"], UP, buff=self.buffs["title"])
-        pentateuco["src"].scale(self.scales["source"]).next_to(pentateuco["image"], DOWN, buff=self.buffs["source"])
+        print(pentateuco["text"].get_center())
+
+        print(self.shifts["text"])
+
+        pentateuco["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+        pentateuco["image"].scale(0.8).next_to(
+            pentateuco["text"], RIGHT, buff=self.buffs["image"])
+        self.position_title(
+            pentateuco["title"],
+            pentateuco["image"]
+        )
+        print(pentateuco["text"].get_center())
 
         # animations
         # self.add(
-        #     pentateuco["image"], 
-        #     pentateuco["text"], 
+        #     pentateuco["image"],
+        #     pentateuco["text"],
         #     pentateuco["title"],
         #     pentateuco["src"],
         # )
@@ -871,57 +841,61 @@ class Biblia(AncientTime):
             self.timeline.next_time_scroll(),
             # fade out previous mobs
             AnimationGroup(
-                *[FadeOutAndShift(image, self.points["out screen up"]) for image in self.previous["images"]],
+                *[FadeOutAndShift(image, self.points["out screen up"])
+                  for image in self.previous["images"]],
                 lag_ratio=0
             ),
-            FadeOutAndShift(self.previous["group"], self.points["out screen up"]),
+            FadeOutAndShift(self.previous["group"],
+                            self.points["out screen up"]),
             *self.get_scroll_animation(pentateuco),
             run_time=4
         )
-        
+
         self.wait()
-    
+
+
 class BC762(AncientTime):
     def __init__(self, *args, **kwargs):
         super().__init__(start_time="Biblia", *args, **kwargs)
 
         self.paragraph_config["line_length"] = 35
 
-        self.wait() # this fix the bug of updaters not being updated -_-
+        self.wait()  # this fix the bug of updaters not being updated -_-
 
         self.previous = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\9_pentateuco.png')),
             "text": presets.PTex(
-                    "Se observa en el pentateuco (libro de números) un censo realizado por moisés en su salida de Egipto",
-                    alignment="left",
-                    **self.paragraph_config
-                ),
-            "group": VGroup(
-                Tex(
-                    "Pentateuco", 
-                    **self.title_config
-                ),
-                Tex(
-                    "https://bit.ly/3nb4Ydq", # update
-                    **self.source_config
-                )
+                "Se observa en el pentateuco (libro de números) un censo realizado por moisés en su salida de Egipto",
+                alignment="left",
+                **self.paragraph_config
+            ),
+            "title": Tex(
+                "Pentateuco",
+                **self.title_config
             )
         }
-
         # previous config
-        self.previous["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
-        self.previous["image"].scale(0.8).next_to(self.previous["text"], RIGHT, buff=self.buffs["image"])
-        self.position_title_and_src(
-            *self.previous["group"],
+        self.previous["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+
+        self.previous["text"].shift(RIGHT*0.33)
+
+        self.previous["image"].scale(0.8).next_to(
+            self.previous["text"], RIGHT, buff=self.buffs["image"])
+        self.position_title(
+            self.previous["title"],
             self.previous["image"]
         )
+        print(self.previous["text"].get_center())
 
         self.add(*self.previous.values())
 
     def construct(self):
+        self.wait()
+        return
         # images and text
         self.paragraph_config["line_length"] = 32
-        
+
         sargon = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\10_sargon_library.jpg')),
             "title": Tex(
@@ -938,35 +912,31 @@ class BC762(AncientTime):
                 "Datos estadisticos sobre producción \\\\y cuentas en general",
                 dot_scale_factor=2,
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3dJoRFA",
-                **self.source_config
             )
         }
-        
+
         # add colors to dots
         for line in sargon["list"]:
-            line[0].set_color(self.colors["bullet dot"]) 
+            line[0].set_color(self.colors["bullet dot"])
 
-        sargon["text"].scale(self.scales["text"]).next_to(self.cur_time,RIGHT).align_on_border(RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
-        sargon["list"].scale(self.scales["list"]).next_to(sargon["text"], DOWN, aligned_edge=LEFT).shift(RIGHT * self.buffs["indentation"])
+        sargon["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT).align_on_border(
+            RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
+        sargon["list"].scale(self.scales["list"]).next_to(
+            sargon["text"], DOWN, aligned_edge=LEFT).shift(RIGHT * self.buffs["indentation"])
 
-
-        sargon["image"].scale(1.2).next_to(sargon["text"], LEFT, buff=self.buffs["image"])
+        sargon["image"].scale(1.2).next_to(
+            sargon["text"], LEFT, buff=self.buffs["image"])
         VGroup(sargon["text"], sargon["list"]).shift(UP * 0.8)
 
-        self.position_title_and_src(
-            sargon["title"], 
-            sargon["src"],
+        self.position_title(
+            sargon["title"],
             sargon["image"]
         )
-        
 
         # animations
         # self.add(
-        #     sargon["image"], 
-        #     sargon["text"], 
+        #     sargon["image"],
+        #     sargon["text"],
         #     sargon["title"],
         #     sargon["list"],
         #     sargon["src"]
@@ -975,10 +945,11 @@ class BC762(AncientTime):
         self.play(
             self.timeline.next_time_scroll(),
             # fade out previous mobs
-            FadeOutAndShift(self.previous["image"], self.points["out screen up"]),
+            FadeOutAndShift(self.previous["image"],
+                            self.points["out screen up"]),
             FadeOutAndShift(
                 VGroup(
-                    self.previous["group"], 
+                    self.previous["group"],
                     self.previous["text"]
                 ),
                 self.points["out screen up"]
@@ -986,9 +957,9 @@ class BC762(AncientTime):
             *self.get_scroll_animation(sargon),
             run_time=4
         )
-        
+
         self.wait()
-    
+
     def get_scroll_animation(self, mob_dict):
         return [
             AnimationGroup(
@@ -999,38 +970,29 @@ class BC762(AncientTime):
             ),
             AnimationGroup(
                 Wait(1.2),
-                FadeInFrom(
-                    VGroup(
-                        mob_dict["text"],
-                        mob_dict["list"]
-                    ),
-                    self.points["out screen down"]
-                ),
-                lag_ratio=1
-            ),
-            AnimationGroup(
-                Wait(1.5),
-                FadeIn(mob_dict["src"]),
-                lag_ratio=1
+                Write(mob_dict["text"]),
+                Write(mob_dict["list"]),
+                lag_ratio=0.5
             )
         ]
+
 
 class BC594(AncientTime):
     def __init__(self, *args, **kwargs):
         super().__init__(start_time="762 A.C.", *args, **kwargs)
-        
+
         self.paragraph_config["line_length"] = 32
         self.wait()
 
         self.previous = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\10_sargon_library.jpg')),
             "text": presets.PTex(
-                    "Sargon II Fundo una biblioteca en nínive donde recopila:",
-                    **self.paragraph_config
-                ),
+                "Sargon II Fundo una biblioteca en nínive donde recopila:",
+                **self.paragraph_config
+            ),
             "group": VGroup(
                 Tex(
-                    "Biblioteca de Ashurbanipal", 
+                    "Biblioteca de Ashurbanipal",
                     **self.title_config
                 ),
                 BulletedList(
@@ -1039,28 +1001,27 @@ class BC594(AncientTime):
                     "Datos estadisticos sobre producción \\\\y cuentas en general",
                     dot_scale_factor=2,
                     **self.paragraph_config
-                ),
-                Tex(
-                    "https://bit.ly/3dJoRFA",
-                    **self.source_config
                 )
             )
         }
 
         for line in self.previous["group"][1]:
-            line[0].set_color(SKY_BLUE) 
+            line[0].set_color(SKY_BLUE)
 
-        self.previous["text"].scale(self.scales["text"]).next_to(self.cur_time,RIGHT).align_on_border(RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
-        self.previous["group"][1].scale(self.scales["list"]).next_to(self.previous["text"], DOWN, aligned_edge=LEFT).shift(RIGHT * self.buffs["indentation"])
+        self.previous["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT).align_on_border(
+            RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
+        self.previous["group"][1].scale(self.scales["list"]).next_to(
+            self.previous["text"], DOWN, aligned_edge=LEFT).shift(RIGHT * self.buffs["indentation"])
 
-        self.previous["image"].scale(1.2).next_to(self.previous["text"], LEFT, buff=self.buffs["image"])
+        self.previous["image"].scale(1.2).next_to(
+            self.previous["text"], LEFT, buff=self.buffs["image"])
 
-        VGroup(self.previous["text"], self.previous["group"][1]).shift(UP * 0.8)
+        VGroup(self.previous["text"],
+               self.previous["group"][1]).shift(UP * 0.8)
 
-        self.position_title_and_src(
+        self.position_title(
             self.previous["group"][0],
-            self.previous["group"][2],
-            self.previous["image"],
+            self.previous["image"]
         )
 
         self.add(
@@ -1079,38 +1040,35 @@ class BC594(AncientTime):
                 "Realizaron estadística sobre distribución de terreno y servicio militar, también se registraron censos para el cálculo de impuestos y derechos de voto",
                 alignment="left",
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3veq1Pk",
-                **self.source_config
             )
         }
         self.scales["text"] = 0.65
 
-        greeks["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
-        greeks["image"].scale(0.75).next_to(greeks["text"], RIGHT, buff=self.buffs["image"])
-        self.position_title_and_src(
+        greeks["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+        greeks["image"].scale(0.75).next_to(
+            greeks["text"], RIGHT, buff=self.buffs["image"])
+        self.position_title(
             greeks["title"],
-            greeks["src"],
             greeks["image"]
         )
 
         # animations
 
         # self.add(
-        #     greeks["image"], 
-        #     greeks["text"], 
+        #     greeks["image"],
+        #     greeks["text"],
         #     greeks["title"],
-        #     greeks["src"]
         # )
-        
+
         self.play(
             self.timeline.next_time_scroll(),
             # fade out previous mobs
-            FadeOutAndShift(self.previous["image"], self.points["out screen up"]),
+            FadeOutAndShift(self.previous["image"],
+                            self.points["out screen up"]),
             FadeOutAndShift(
                 VGroup(
-                    self.previous["group"],
+                    *self.previous["group"],
                     self.previous["text"]
                 ),
                 self.points["out screen up"]
@@ -1119,8 +1077,9 @@ class BC594(AncientTime):
             *self.get_scroll_animation(greeks),
             run_time=4
         )
-        
+
         self.wait()
+
 
 class RomanEmpire(AncientTime):
     def __init__(self, *args, **kwargs):
@@ -1132,26 +1091,24 @@ class RomanEmpire(AncientTime):
         self.previous = {
             "image": ImageMobject(filename_or_array=image_path('.\\history\\11_greek_census.jpg')),
             "text": presets.PTex(
-                    "Realizaron estadística sobre distribución de terreno y servicio militar, también se registraron censos para el cálculo de impuestos y derechos de voto",
-                    alignment="left",
-                    **self.paragraph_config
-                ),
-            "group": VGroup(
+                "Realizaron estadística sobre distribución de terreno y servicio militar, también se registraron censos para el cálculo de impuestos y derechos de voto",
+                alignment="left",
+                **self.paragraph_config
+            ),
+            "title": VGroup(
                 Tex(
-                    "Estádistica en Grecia", 
+                    "Estádistica en Grecia",
                     **self.title_config
-                ),
-                Tex(
-                    "https://bit.ly/3veq1Pk", # update
-                    **self.source_config
                 )
             )
         }
         self.scales["text"] = 0.65
-        self.previous["text"].scale(self.scales["text"]).next_to(self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
-        self.previous["image"].scale(0.75).next_to(self.previous["text"], RIGHT, buff=self.buffs["image"])
-        self.position_title_and_src(
-            *self.previous["group"],
+        self.previous["text"].scale(self.scales["text"]).next_to(
+            self.cur_time, RIGHT, buff=self.buffs["text"]).shift(self.shifts["text"])
+        self.previous["image"].scale(0.75).next_to(
+            self.previous["text"], RIGHT, buff=self.buffs["image"])
+        self.position_title(
+            self.previous["title"],
             self.previous["image"]
         )
 
@@ -1165,48 +1122,45 @@ class RomanEmpire(AncientTime):
                 **self.title_config
             ),
             "list": BulletedList(
-                "Realizaban censos cada 5 años", 
+                "Realizaban censos cada 5 años",
                 "sus funcionarios recopilaban los datos \\\\sobre nacimiento, defunciones y \\\\matrimonios",
                 "Recuentos de ganado, terreno y \\\\riquezas obtenidas en las tierras \\\\conquistadas",
                 dot_scale_factor=2,
                 **self.paragraph_config
-            ),
-            "src": Tex(
-                "https://bit.ly/3gvbB94",
-                **self.source_config
             )
         }
 
         for line in romans["list"]:
             line[0].set_color(self.colors["bullet dot"]).scale(1.05)
-        
+
         self.scales["list"] = 0.6
 
-        romans["list"].scale(self.scales["list"]).next_to(self.cur_time,RIGHT).align_on_border(RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
-        romans["image"].scale(0.9).next_to(romans["list"], LEFT, buff=self.buffs["image"])
-        self.position_title_and_src(
+        romans["list"].scale(self.scales["list"]).next_to(self.cur_time, RIGHT).align_on_border(
+            RIGHT, self.buffs["right border"]).shift(self.shifts["text"])
+        romans["image"].scale(0.9).next_to(
+            romans["list"], LEFT, buff=self.buffs["image"])
+        self.position_title(
             romans["title"],
-            romans["src"],
             romans["image"]
         )
 
         # animations
 
         # self.add(
-        #     romans["image"], 
-        #     romans["list"], 
+        #     romans["image"],
+        #     romans["list"],
         #     romans["title"],
-        #     romans["src"]
         # )
 
         self.play(
             self.timeline.next_time_scroll(),
 
             # fade out previous mobs
-            FadeOutAndShift(self.previous["image"], self.points["out screen up"]),
+            FadeOutAndShift(self.previous["image"],
+                            self.points["out screen up"]),
             FadeOutAndShift(
                 VGroup(
-                    self.previous["group"], 
+                    self.previous["title"],
                     self.previous["text"]
                 ),
                 self.points["out screen up"]
@@ -1215,8 +1169,9 @@ class RomanEmpire(AncientTime):
             *self.get_scroll_animation(romans),
             run_time=4
         )
-        
+
         self.wait()
+
 
 class Bibliography(Scene):
     def __init__(self, *args, **kwargs):
@@ -1302,6 +1257,7 @@ class Bibliography(Scene):
                     ), run_time=2)
             )
         return anims
+
 
 class Outro(Scene):
     def __init__(self, *args, **kwargs):
@@ -1422,6 +1378,7 @@ class Outro(Scene):
         self.wait(2)
         self.play(FadeOut(banner), FadeOut(motor))
 
+
 class Test(Scene):
     def construct(self):
         l = BulletedList(
@@ -1436,56 +1393,73 @@ class Test(Scene):
         self.add(l)
         self.wait()
 
+
 def image_path(name: str) -> str:
     path = os.path.join("assets", "images", name)
     if not os.path.exists(path):
         raise Exception(f"{path} does not exist.")
     return path
 
+
 def coord(x: float, y: float) -> "ndarray":
     return RIGHT * x + UP * y
+
 
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            'FirstChapterIntro': [
-                '-ql',
-                '-p'
-            ],
-            'FirstChapter': [
-                '-ql',
-                '-p'
-            ],
-            'AncientTime': [
-                '-ql',
-                '-p'
-            ],
-            'BC3000': [
-                '-ql',
-                '-p'
-            ],
-            'Biblia': [
-                '-ql',
-                '-p'
-            ],
-            'BC762': [
-                '-ql',
-                '-p'
-            ],
-            'BC594': [
-                '-ql',
-                '-p'
-            ],
-            # 'RomanEmpire': [
+            # 'FirstChapterIntro': [
             #     '-ql',
             #     '-p'
             # ],
+            'FirstChapter': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'AncientTime': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'BC3000': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'Biblia': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'BC762': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'BC594': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
+            'RomanEmpire': [
+                '-qh',
+                '-p',
+                "--disable_caching",
+                "--flush_cache"
+            ],
             # 'Bibliography': [
-            #     '-sql',
+            #     '-qh',
             #     '-p'
             # ],
             # 'Outro': [
-            #     '-ql',
+            #     '-qh',
             #     '-p'
             # ],
             # 'Test': [

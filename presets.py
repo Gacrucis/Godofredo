@@ -82,7 +82,7 @@ class TimeLine(VGroup):
         time_scale = time_scale or 0.6
         arrow_scale = arrow_scale or 1
 
-        self.time_buff = time_buff or 0.5
+        self.time_buff = time_buff or 0.4
         self.arrow_buff = arrow_buff = arrow_buff or 0.3
 
         # default colors
@@ -108,7 +108,7 @@ class TimeLine(VGroup):
             self.dots.add(dot)
 
             time_mob = Tex(time, z_index=1, **time_config).scale(time_scale)
-            time_mob.next_to(position, self.directions['times'], self.time_buff)
+            time_mob.next_to(dot, self.directions['times'], self.time_buff)
 
             self.times.add(time_mob)
 
