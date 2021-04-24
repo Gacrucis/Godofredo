@@ -39,3 +39,16 @@ timeline_config = {
         SKY_BLUE
     ]
 }
+
+default_text_config = {
+    "stroke_width": 0.7,
+    "background_stroke_width": 5,
+    "background_stroke_color": BLACK,
+    "sheen_factor": 0,
+    "sheen_direction": UR,
+}
+
+text_config = {
+    **default_text_config,
+    'color': BEIGE
+}
