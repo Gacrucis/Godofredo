@@ -200,13 +200,16 @@ class TimeLine(VGroup):
     def get_arrow(self) -> Arrow:
         return self.arrow
 
-    def get_next_time(self) -> Tex:
+    def get_next_time(self, increment: bool=True) -> Tex:
         if self.index_reference['times'] > self.size:
             raise Exception("Next time exceeds size")
-
+        
         index = self.index_reference['times']
 
         next_time = self.times[index]
+        if not increment:
+            return next_time
+            
         self.index_reference['times'] += 1
 
         return next_time
