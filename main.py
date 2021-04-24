@@ -52,17 +52,17 @@ class Intro(MovingCameraScene):
             "stroke_width": 1,
             "background_stroke_width": 5,
             "background_stroke_color": BLACK,
-            "sheen_factor": .2,
+            "sheen_factor": 0,
             "sheen_direction": UR,
         }
 
     def construct(self):
-        title = Tex('HDLE')
-        title.scale(2)
+        title = Tex('Historia de la Estadística')
+        title.scale(1.5)
         title.align_on_border(UP, buff=2)
 
         subtitle = Tex(
-            'O como colocar datos en términos de numeros (y viceversa)')
+            'O como colocar hechos en términos de numeros (y viceversa)')
         subtitle.scale(0.8)
         subtitle.next_to(title, DOWN, buff=0.35)
         subtitle.set_color(DARK_SKY_BLUE)
@@ -84,7 +84,7 @@ class Intro(MovingCameraScene):
             MathTex(
                 r"\gamma \text{ Edward Parada - 2182070}", **self.names_config),
             MathTex(
-                r"\Omega \text{ Gian Estevez - 2102020}", **self.names_config),
+                r"\Omega \text{ Gian Estevez - 2183074}", **self.names_config),
             MathTex(
                 r"\varepsilon \text{ José Silva - 2183075}", **self.names_config),
             MathTex(r"\mu \text{ Yuri Garcia - 2182697}", **self.names_config)
@@ -114,12 +114,12 @@ class Intro(MovingCameraScene):
         by.next_to(base_author, LEFT, buff=.15)
 
         lc_title_1 = Tex(
-            'La vida es dura, ',
+            'El 98 \% de las estadísticas',
             alignment='\\justifying'
         )
 
         lc_title_2 = Tex(
-            'pero mas dura es la verdura.',
+            'son inventadas.',
             alignment='\\justifying'
         )
 
@@ -135,7 +135,7 @@ class Intro(MovingCameraScene):
         lc_title = VGroup(lc_title_1, lc_title_2)
         lc_title.set_color(DARK_SKY_BLUE)
 
-        subtitle_auth = Tex('- Abraham Lincoln')
+        subtitle_auth = Tex('- Anónimo')
         subtitle_auth.set_color(VIOLET)
         subtitle_auth.height = 0.235
         subtitle_auth.next_to(lc_title, DOWN, buff=0.2)
@@ -145,31 +145,31 @@ class Intro(MovingCameraScene):
         self.play(Write(self.uis_logo), run_time=3)
         self.wait(1.5)
 
-        # self.play(FadeOut(self.uis_logo), run_time=1.5)
+        self.play(FadeOut(self.uis_logo), run_time=1.5)
 
-        # self.play(Write(title))
-        # self.play(Write(subtitle))
+        self.play(Write(title))
+        self.play(Write(subtitle))
 
-        # self.play(Write(by))
-        # self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
+        self.play(Write(by))
+        self.play(AnimationGroup(*author_anims, lag_ratio=0.2), run_time=3)
 
-        # self.wait(0.8)
+        self.wait(0.8)
 
-        # anim_group = AnimationGroup(
-        #     Write(lc_title), Write(subtitle_auth), lag_ratio=0.2)
+        anim_group = AnimationGroup(
+            Write(lc_title), Write(subtitle_auth), lag_ratio=0.2)
 
-        # self.play(anim_group, run_time=2.5)
+        self.play(anim_group, run_time=2.5)
 
-        # self.wait(3)
+        self.wait(3)
 
-        # # lc_title.anim
+        # lc_title.anim
 
-        # self.play(
-        #     FadeOut(presets.get_vmobjects_from_scene(self)),
-        #     FadeOut(VGroup(authors, lc_title, subtitle_auth))
-        # )
+        self.play(
+            FadeOut(presets.get_vmobjects_from_scene(self)),
+            FadeOut(VGroup(authors, lc_title, subtitle_auth))
+        )
 
-        # self.wait()
+        self.wait()
 
 class FirstChapterIntro(MovingCameraScene):
 
@@ -1345,10 +1345,10 @@ class Outro(Scene):
         ).scale(author_scale)
 
         student_images = [
-            ImageMobject(filename_or_array=image_path("ed.png")),
-            ImageMobject(filename_or_array=image_path("ed.png")),
+            ImageMobject(filename_or_array=image_path("ed.jpeg")),
+            ImageMobject(filename_or_array=image_path("gian.jpeg")),
             ImageMobject(filename_or_array=image_path("jose.png")),
-            ImageMobject(filename_or_array=image_path("jose.png")),
+            ImageMobject(filename_or_array=image_path("yuri.jpg")),
         ]
 
         for image in student_images:
@@ -1448,46 +1448,46 @@ def coord(x: float, y: float) -> "ndarray":
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            'FirstChapterIntro': [
-                '-ql',
-                '-p'
-            ],
-            'FirstChapter': [
-                '-ql',
-                '-p'
-            ],
-            'AncientTime': [
-                '-ql',
-                '-p'
-            ],
-            'BC3000': [
-                '-ql',
-                '-p'
-            ],
-            'Biblia': [
-                '-ql',
-                '-p'
-            ],
-            'BC762': [
-                '-ql',
-                '-p'
-            ],
-            'BC594': [
-                '-ql',
-                '-p'
-            ],
+            # 'Intro': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'FirstChapter': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'AncientTime': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'BC3000': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Biblia': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'BC762': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'BC594': [
+            #     '-qh',
+            #     # '-p'
+            # ],
             # 'RomanEmpire': [
-            #     '-ql',
-            #     '-p'
+            #     '-qh',
+            #     # '-p'
             # ],
             # 'Bibliography': [
-            #     '-sql',
-            #     '-p'
+            #     '-qh',
+            #     # '-p'
             # ],
-            # 'Outro': [
-            #     '-ql',
-            #     '-p'
-            # ],
+            'Outro': [
+                '-qh',
+                '-p'
+            ],
             # 'Test': [
             #     '-ql',
             #     '-p'
@@ -1498,4 +1498,4 @@ if __name__ == "__main__":
     )
 
     runner.run_scenes()
-    runner.concatenate_videos(run_output=True)
+    # runner.concatenate_videos(run_output=True)
