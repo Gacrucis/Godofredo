@@ -22,24 +22,91 @@ BEIGE = '#7c795d'
 
 PALETTE = [PURPLE, VIOLET, LIGHT_PURPLE, SKY_BLUE, DARK_SKY_BLUE]
 
+UP_SCREEN = UP * 10
+DOWN_SCREEN = DOWN * 10
+
 REFERENCE_POINT = presets.get_coords(-6, 1)
 
 
 class England(MovingCameraScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.timeline = presets.TimeLine(**configs.timeline_config)
+        self.timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
+        self.timeline.preload_for_scene(
+            target_time='Imperio Romano',
+            scene=self # pass the scene as parameter
+        )
+
+        current_time = self.timeline.get_current_time()
+
+        self.wait() # this fix bug of miss position text due to updaters
+
+        title_config = {
+            "stroke_width": 1,
+            "background_stroke_width": 3,
+            "background_stroke_color": BLACK,
+            'color': PURPLE
+        }
+        paragraph_config = {
+            "stroke_width": 1,
+            "background_stroke_width": 3,
+            "background_stroke_color": BLACK,
+            "line_length": 35,
+            "interline_scape": 0.3,
+            "color": BEIGE
+
+        }
+        self.previous = {
+            "image": ImageMobject(filename_or_array=presets.image_path('.\\history\\13_romans_2.jpg')),
+            "title": Tex(
+                "Imperio romano",
+                **title_config
+            ),
+            "list": BulletedList(
+                "Realizaban censos cada 5 años",
+                "sus funcionarios recopilaban los datos \\\\sobre nacimiento, defunciones y \\\\matrimonios",
+                "Recuentos de ganado, terreno y \\\\riquezas obtenidas en las tierras \\\\conquistadas",
+                dot_scale_factor=2,
+                **paragraph_config
+            )
+        }
+
+        for line in self.previous["list"]:
+            line[0].set_color(SKY_BLUE).scale(1.05)
+
+
+
+        self.previous["list"].scale(0.6).next_to(current_time, RIGHT).align_on_border(
+            RIGHT, 1).shift(DOWN * 0.5)
+        self.previous["image"].scale(0.9).next_to(
+            self.previous["list"], LEFT, buff=0.4)
+        self.previous["title"].scale(0.5).next_to(self.previous["image"], UP, buff=0.3)
+
+        self.add(*self.previous.values())
 
     def construct(self):
 
         frame_height = self.camera.frame_height
         frame_width = self.camera.frame_width
 
-        timeline = presets.TimeLine(**configs.timeline_config)
-        timeline.next_to(REFERENCE_POINT, DOWN, buff=0)
-        timeline.preload_for_scene(
-            target_time='594 A.C.',
-            scene=self # pass the scene as parameter
+        self.play(
+            self.timeline.next_time_scroll(),
+            # fade out previous mobs
+            FadeOutAndShift(
+                self.previous["image"],
+                UP_SCREEN
+            ),
+            FadeOutAndShift(
+                VGroup(
+                    self.previous["title"],
+                    self.previous["list"]
+                ),
+                UP_SCREEN
+            ),
+            run_time=3
         )
-
-        self.play(timeline.next_time_scroll())
 
         # self.add(timeline)
         
@@ -59,8 +126,8 @@ class England(MovingCameraScene):
         PREVIOUS_MOBJECTS = self.mobjects
 
         self.play(
-            FadeOutAndShift(paragraph, UP * 2),
-            FadeOutAndShift(guillermo_image, UP * 2),
+            FadeOutAndShift(paragraph, UP_SCREEN),
+            FadeOutAndShift(guillermo_image, UP_SCREEN),
             run_time=2
         )
 
@@ -109,9 +176,9 @@ class XVICentury(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(paragraph, UP * 2),
-            FadeOutAndShift(graph, UP * 2),
-            FadeOutAndShift(self.axes, UP * 2),
+            FadeOutAndShift(paragraph, UP_SCREEN),
+            FadeOutAndShift(graph, UP_SCREEN),
+            FadeOutAndShift(self.axes, UP_SCREEN),
         )
 
 class Colombia1500(GraphScene):
@@ -160,9 +227,9 @@ class Colombia1500(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(paragraph, UP * 2),
-            FadeOutAndShift(coins_svg, UP * 2),
-            FadeOutAndShift(pickaxe_svg, UP * 2),
+            FadeOutAndShift(paragraph, UP_SCREEN),
+            FadeOutAndShift(coins_svg, UP_SCREEN),
+            FadeOutAndShift(pickaxe_svg, UP_SCREEN),
         )
 
 class Colombia1800(GraphScene):
@@ -237,9 +304,9 @@ class Colombia1800(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(bullet_points, UP),
-            FadeOutAndShift(stats_image, UP),
-            # FadeOutAndShift(pickaxe_svg, UP * 2),
+            FadeOutAndShift(bullet_points, UP_SCREEN),
+            FadeOutAndShift(stats_image, UP_SCREEN),
+            # FadeOutAndShift(pickaxe_svg, UP_SCREEN),
         )
 
 class XXCentury(GraphScene):
@@ -323,7 +390,7 @@ class XXCentury(GraphScene):
             self.play(
                 Uncreate(paragraph),
                 FadeOut(stats_image),
-                # FadeOutAndShift(pickaxe_svg, UP * 2),
+                # FadeOutAndShift(pickaxe_svg, UP_SCREEN),
             )
 
             self.wait()
@@ -331,7 +398,7 @@ class XXCentury(GraphScene):
         # self.play(
         #     FadeOutAndShift(paragraph, UP),
         #     FadeOutAndShift(stats_image, UP),
-        #     # FadeOutAndShift(pickaxe_svg, UP * 2),
+        #     # FadeOutAndShift(pickaxe_svg, UP_SCREEN),
         # )
 
 class Colombia1900(GraphScene):
@@ -410,9 +477,9 @@ class Colombia1900(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(bullet_points, UP),
-            FadeOutAndShift(stats_image, UP),
-            # FadeOutAndShift(pickaxe_svg, UP * 2),
+            FadeOutAndShift(bullet_points, UP_SCREEN),
+            FadeOutAndShift(stats_image, UP_SCREEN),
+            # FadeOutAndShift(pickaxe_svg, UP_SCREEN),
         )
 
 class Colombia2000(GraphScene):
@@ -489,9 +556,9 @@ class Colombia2000(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(bullet_points, UP),
-            FadeOutAndShift(stats_image, UP),
-            # FadeOutAndShift(pickaxe_svg, UP * 2),
+            FadeOutAndShift(bullet_points, UP_SCREEN),
+            FadeOutAndShift(stats_image, UP_SCREEN),
+            # FadeOutAndShift(pickaxe_svg, UP_SCREEN),
         )
 
 class Colombia2020(GraphScene):
@@ -547,8 +614,8 @@ class Colombia2020(GraphScene):
         self.wait(2)
 
         self.play(
-            FadeOutAndShift(paragraph, UP),
-            FadeOutAndShift(stats_image, UP),
+            FadeOutAndShift(paragraph, UP_SCREEN),
+            FadeOutAndShift(stats_image, UP_SCREEN),
         )
 
         self.wait(2)
@@ -556,10 +623,10 @@ class Colombia2020(GraphScene):
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            # 'England': [
-            #     '-qh',
-            #     # '-p'
-            # ],
+            'England': [
+                '-ql',
+                '-p'
+            ],
             # 'XVICentury': [
             #     '-qh',
             #     # '-p'
@@ -584,10 +651,10 @@ if __name__ == "__main__":
             #     '-qh',
             #     # '-p'
             # ],
-            'Colombia2020': [
-                '-qh',
-                '-p'
-            ],
+            # 'Colombia2020': [
+            #     '-qh',
+            #     '-p'
+            # ],
 
         },
         file_path=r'EdScenes.py',  # it's relative to cwd

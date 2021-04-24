@@ -14,12 +14,13 @@ TIMELINE_TIMES = [
     "Biblia",
     "762 A.C.",
     "594 A.C.",
+    "Imperio Romano",
     "1066",
-    "Siglo XVI", # General y Colombia
-    "1800", # Colombia
-    "Siglo XX", # General y Colombia
-    "2000", # Colombia
-    "2020" # Colombia
+    "Siglo XVI",  # General y Colombia
+    "1800",  # Colombia
+    "Siglo XX",  # General y Colombia
+    "2000",  # Colombia
+    "2020"  # Colombia
 ]
 
 TIMELINE_LENGTH = 20
