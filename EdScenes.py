@@ -328,11 +328,11 @@ class XXCentury(GraphScene):
 
             self.wait()
 
-        self.play(
-            FadeOutAndShift(paragraph, UP),
-            FadeOutAndShift(stats_image, UP),
-            # FadeOutAndShift(pickaxe_svg, UP * 2),
-        )
+        # self.play(
+        #     FadeOutAndShift(paragraph, UP),
+        #     FadeOutAndShift(stats_image, UP),
+        #     # FadeOutAndShift(pickaxe_svg, UP * 2),
+        # )
 
 class Colombia1900(GraphScene):
 
@@ -524,7 +524,8 @@ class Colombia2020(GraphScene):
         **configs.text_config
         )
 
-        paragraph.width = paragraph_width          
+        paragraph.width = paragraph_width
+        paragraph.align_on_border(LEFT, buff=2.5)
 
         remaining_space = (Point().align_on_border(RIGHT, buff=0).get_center()) - (paragraph.get_corner(RIGHT))
 
@@ -548,43 +549,44 @@ class Colombia2020(GraphScene):
         self.play(
             FadeOutAndShift(paragraph, UP),
             FadeOutAndShift(stats_image, UP),
-            # FadeOutAndShift(pickaxe_svg, UP * 2),
         )
+
+        self.wait(2)
 
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            'England': [
-                '-qh',
-                # '-p'
-            ],
-            'XVICentury': [
-                '-qh',
-                # '-p'
-            ],
-            'Colombia1500': [
-                '-qh',
-                # '-p'
-            ],
-            'Colombia1800': [
-                '-qh',
-                # '-p'
-            ],
-            'XXCentury': [
-                '-qh',
-                # '-p'
-            ],
-            'Colombia1900': [
-                '-qh',
-                # '-p'
-            ],
-            'Colombia2000': [
-                '-qh',
-                # '-p'
-            ],
+            # 'England': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'XVICentury': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Colombia1500': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Colombia1800': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'XXCentury': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Colombia1900': [
+            #     '-qh',
+            #     # '-p'
+            # ],
+            # 'Colombia2000': [
+            #     '-qh',
+            #     # '-p'
+            # ],
             'Colombia2020': [
                 '-qh',
-                # '-p'
+                '-p'
             ],
 
         },
