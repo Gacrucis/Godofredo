@@ -249,7 +249,7 @@ class Test(Scene):
 if __name__ == "__main__":
     runner = video_utils.ManimRunner(
         scenes={
-            "Bibliography": [
+            "Intro": [
                 "-ql",
                 "-p",
                 "--disable_caching",
